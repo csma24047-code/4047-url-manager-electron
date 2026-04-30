@@ -1,14 +1,43 @@
 {
-	"name": "Electron Dev Container",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
-	"runArgs": [
-		"--net=host", // ホストのネットワークを使用
-		"-e",
-		"--privileged" // ハードウェアアクセラレーション等の許可（必要に応じて）
-	],
-	"containerEnv": {
-		"DISPLAY": "host.docker.internal:0"
-	}
+  "name": "Electron Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": [
+    "--net=host", // ホストのネットワークを使用
+    "-e",
+    "--privileged" // ハードウェアアクセラレーション等の許可（必要に応じて）
+  ],
+  "containerEnv": {
+    "DISPLAY": "host.docker.internal:0"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        //共通設定
+        "ms-azuretools.vscode-containers",
+        "usernamehw.errorlens",
+        "esbenp.prettier-vscode",
+        "mechatroner.rainbow-csv",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        //py
+        "ms-python.python",
+        "charliermarsh.ruff",
+        //js
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        //一般設定
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        //Python
+        "python.analysis.typeCheckingMode": "standard",
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  }
 }
