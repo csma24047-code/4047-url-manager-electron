@@ -12,6 +12,7 @@
 !**/*.js
 !**/*.json
 !**/*.gitignore
+!/readme.txt
 
 
 #除外
