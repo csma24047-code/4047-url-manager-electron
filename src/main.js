@@ -8,7 +8,7 @@ function createWindow() {
 
   // Googleなどを表示させてテスト
   //win.loadURL('https://www.google.com')
-  win.loadFile("index.html");
+  win.loadFile("./src/index.html");
 }
 
 app.whenReady().then(createWindow);

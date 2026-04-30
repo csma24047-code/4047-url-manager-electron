@@ -1,7 +1,8 @@
 {
   "name": "Electron Dev Container",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
+    "context": ".."
   },
   "runArgs": [
     "--net=host", // ホストのネットワークを使用

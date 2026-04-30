@@ -8,11 +8,14 @@
 #許可
 !.devcontainer/*
 !.vscode/*
+!/.dockerignore
+!/.gitignore
+!/readme.txt
+
 !**/*.html
 !**/*.js
 !**/*.json
-!**/*.gitignore
-!/readme.txt
+
 
 #除外
 *node_modules/
