@@ -1,24 +1,21 @@
-// src/main.ts
 import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
-import * as path from "path";
 import * as fs from "fs";
-import { UrlItem } from "./types";
+import { UrlItem } from "./core/types";
+import { create_window } from "./main_init";
 
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 1600,
-    height: 900,
-    webPreferences: {
-      // 変換後の preload.js は dist に書き出される想定
-      preload: path.join(__dirname, "preload.js"),
-      contextIsolation: true,
-    },
-  });
-  // index.htmlの場所はプロジェクト構造に合わせて調整
-  win.loadFile(path.join(__dirname, "index.html"));
+/**
+ * 外部ブラウザでURLを開く
+ */
+function handleOpenBrowser(_event: Electron.IpcMainEvent, url: string) {
+  if (url) {
+    shell.openExternal(url);
+  }
 }
 
-ipcMain.handle("read-txt-file", async (): Promise<UrlItem[]> => {
+/**
+ * TXTファイルを選択して解析し、UrlItem[] を返す
+ */
+async function handleReadTxtFile(): Promise<UrlItem[]> {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     filters: [{ name: "Text Files", extensions: ["txt"] }],
     properties: ["openFile"],
@@ -26,22 +23,68 @@ ipcMain.handle("read-txt-file", async (): Promise<UrlItem[]> => {
 
   if (canceled || !filePaths[0]) return [];
 
-  const content = fs.readFileSync(filePaths[0], "utf-8");
+  try {
+    const content = fs.readFileSync(filePaths[0], "utf-8");
+    return parseTxtToUrlItems(content);
+  } catch (error) {
+    console.error("Failed to read file:", error);
+    return [];
+  }
+}
 
-  // 文字列から UrlItem オブジェクトの配列に変換
+/**
+ * テキスト内容を UrlItem 形式に変換する（純粋関数）
+ */
+function parseTxtToUrlItems(content: string): UrlItem[] {
   return content
     .split(/\r?\n/)
     .filter((line) => line.trim() !== "")
     .map((line) => ({
-      title: "無題のURL", // 必要に応じて解析ロジックを追加
+      title: "無題のURL",
       url: line.trim(),
       tags: ["Imported"],
     }));
+}
+
+// 1. 通知を受け取る
+ipcMain.on("on-load-click", async (event) => {
+  const items = await handleReadTxtFile();
+
+  // HTMLをMain側で組み立てる
+  const html = items
+    .map(
+      (item) => `
+    <li class="url-card" onclick="window.electronAPI.openBrowser('${item.url}')">
+      <div class="info">
+        <strong>${item.title}</strong>
+        <p class="url-text">${item.url}</p>
+      </div>
+      <div class="tags">
+        ${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}
+      </div>
+    </li>
+  `,
+    )
+    .join("");
+
+  event.reply("update-view-html", html);
 });
 
-// ブラウザを開く処理も追加
-ipcMain.on("open-browser", (_event, url: string) => {
+// ブラウザ起動もMainで完結
+ipcMain.on("open-browser", (_event, url) => {
   shell.openExternal(url);
 });
 
-app.whenReady().then(createWindow);
+/**
+ * 全ての IPC ハンドラを登録する
+ */
+function registerIpcHandlers() {
+  ipcMain.handle("read-txt-file", handleReadTxtFile);
+  ipcMain.on("open-browser", handleOpenBrowser);
+}
+
+// アプリの起動
+app.whenReady().then(() => {
+  registerIpcHandlers();
+  create_window();
+});
