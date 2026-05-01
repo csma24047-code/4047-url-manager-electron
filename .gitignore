@@ -15,7 +15,10 @@
 !**/*.html
 !**/*.js
 !**/*.json
+!**/*.css
+!**/*.ts
 
 
 #除外
 *node_modules/
+*dist/

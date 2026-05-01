@@ -2,15 +2,21 @@
   "name": "my-electron-app",
   "version": "1.0.0",
   "description": "Hello World!!",
-  "main": "./src/main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "start": "electron . --no-sandbox",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && cpx \"src/**/*.{html,css,png,jpg}\" dist",
+    "watch": "tsc -w & cpx \"src/**/*.{html,css,png,jpg}\" dist -w",
+    "start": "npm run build && electron . --no-sandbox"
   },
   "author": "Jane Doe",
   "license": "MIT",
   "dependencies": {
-    "electron-store": "^11.0.2",
-    "electron": "^41.3.0"
+    "electron": "^41.3.0",
+    "electron-store": "^11.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "cpx": "^1.5.0",
+    "typescript": "^6.0.3"
   }
 }
