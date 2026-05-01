@@ -1,7 +1,7 @@
 {
   "name": "my-electron-app",
   "version": "1.0.0",
-  "description": "Hello World!",
+  "description": "Hello World!!",
   "main": "./src/main.js",
   "scripts": {
     "start": "electron . --no-sandbox",
@@ -9,10 +9,8 @@
   },
   "author": "Jane Doe",
   "license": "MIT",
-  "devDependencies": {
-    "electron": "^41.3.0"
-  },
   "dependencies": {
-    "electron-store": "^11.0.2"
+    "electron-store": "^11.0.2",
+    "electron": "^41.3.0"
   }
 }
