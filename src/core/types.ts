@@ -1,9 +1,3 @@
-export interface UrlItem {
-  title: string;
-  url: string;
-  tags: string[];
-}
-
 export interface IElectronAPI {
   // 1. 【通知】Mainに「ボタンが押された」ことを報告するだけ
   notifyLoadClick: () => void;

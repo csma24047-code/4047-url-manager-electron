@@ -1,12 +1,12 @@
 const urlListElement = document.getElementById("urlList") as HTMLUListElement;
 const loadBtn = document.getElementById("loadBtn") as HTMLButtonElement;
 
-// ボタンが押されたら「押されたよ」とだけ報告する
+// ボタンが押されただけ報告
 loadBtn?.addEventListener("click", () => {
   window.electronAPI.notifyLoadClick();
 });
 
-// Mainから「これを出せ」と言われたHTMLをそのまま貼り付けるだけ
+// Mainからのstrを出力
 window.electronAPI.onUpdateViewHtml((html: string) => {
   if (urlListElement) {
     urlListElement.innerHTML = html;

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && cpx \"src/**/*.{html,css,png,jpg}\" dist",
     "watch": "tsc -w & cpx \"src/**/*.{html,css,png,jpg}\" dist -w",
-    "start": "npm run build && electron . --no-sandbox"
+    "start": "npm run build && electron . --no-sandbox --disable-gpu"
   },
   "author": "Jane Doe",
   "license": "MIT",
