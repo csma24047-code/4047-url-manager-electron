@@ -1,7 +1,14 @@
+//electronを使用
 import { app, BrowserWindow, ipcMain } from "electron";
+//パス解決
+import { fileURLToPath } from "url";
 import * as path from "path";
-import { pickAndReadTextFile } from "./shell/fileio/func";
-import { parseTxtToUrlItems } from "./core/pure_func";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const projectRoot = path.join(__dirname, "..");
+//自作ファイル
+import { pickAndReadJsonFile } from "@/file_io_func.js";
+import { parseTxtToUrlItems } from "@/pure_func.js";
 
 //ウィンドウ作成
 export function create_window(options: {
@@ -20,10 +27,10 @@ export function create_window(options: {
   win.loadFile(options.htmlPath);
 }
 
-export function registerIpcHandlers() {
+export function registerIpcHandlers(jsonPath: string) {
   //ファイルを読み込んで画面に表示
   ipcMain.on("load-urls", async (event) => {
-    const rawText = await pickAndReadTextFile();
+    const rawText = await pickAndReadJsonFile(jsonPath);
     if (!rawText) return "";
     const html = parseTxtToUrlItems(rawText);
     event.reply("update-urls", html);
@@ -32,12 +39,12 @@ export function registerIpcHandlers() {
 
 // アプリの起動
 export function initialize_app() {
-  const preloadPath = path.join(__dirname, "shell/ui/preload.js");
-  const htmlPath = path.join(__dirname, "shell/ui/index.html");
+  const preloadPath = path.join(projectRoot, "dist", "preload.js");
+  const htmlPath = path.join(projectRoot, "dist", "index.html");
+  const jsonPath = path.join(projectRoot, "urls.json");
 
   app.whenReady().then(() => {
-    console.log("App is ready!"); // これが出ているか確認
-    registerIpcHandlers();
+    registerIpcHandlers(jsonPath);
     create_window({ preloadPath, htmlPath });
   });
 }

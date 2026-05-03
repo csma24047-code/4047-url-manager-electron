@@ -1,23 +1,35 @@
 {
   "compilerOptions": {
-    /* ファイル構成：srcから読み込んでdistに出す */
     "rootDir": "./src",
     "outDir": "./dist",
 
-    /* 環境設定：Electronのメインプロセスに合わせる */
-    "module": "commonjs",
-    "target": "esnext",
-    "lib": ["esnext", "dom"], // DOMを追加
-    "types": ["node"], // nodeの型を明示
+    //プロジェクトルートからimportしたいから
+    "paths": {
+      "@/*": ["./src/*"] // @/ を src/ に置き換える
+    },
+    // ...他の設定
 
-    /* デバッグ用：これがあるとブラウザのデバッグツールで元のTSが見れる */
+    /* React / Vite 用の設定 */
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler", // Viteとの相性が良い設定
+    "useDefineForClassFields": true,
+
+    /* 環境設定 */
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+
+    /* デバッグ・互換性 */
     "sourceMap": true,
-
-    /* 型チェックの厳しさ（デフォルトを維持しつつ調整） */
-    "strict": true,
-    "noUncheckedIndexedAccess": true, // 配列のアクセスを厳しくチェック（安全）
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "esModuleInterop": true // これを追加！ライブラリ読み込みが楽になる
+
+    /* 型チェックの厳しさ */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": false // tscでファイルを出力するのでfalseでOK
   },
-  "include": ["src/**/*"] // srcの中身を全部やるよ、と教えてあげる
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

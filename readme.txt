@@ -7,3 +7,6 @@ Multiple windows→次に進んでいく→Disable access controlチェック→
 	}
 
 でディスプレイを指定
+
+package.json
+

@@ -27,7 +27,8 @@
         "ms-python.python",
         "charliermarsh.ruff",
         //js
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss"
       ],
       "settings": {
         //一般設定
