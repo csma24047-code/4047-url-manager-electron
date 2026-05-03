@@ -12,33 +12,56 @@
   "containerEnv": {
     "DISPLAY": "host.docker.internal:0"
   },
-  "postCreateCommand": "npm install",
+  //既存のライブラリをnpm installで再利用
+  //pruneでpackage.jsonにないものは削除
+  //sudo ~:「管理者として命ずる。このフォルダと、今後作る中身のすべてを node の持ち物に変更せよ。」の意
+  "postCreateCommand": "sudo chown -R node:node /home/node/.vscode-server/extensions && npm install && npm prune",
+  "mounts": [
+    {
+      "source": "vscode-extensions-cache",
+      "target": "/home/node/.vscode-server/extensions",
+      "type": "volume"
+    }
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
-        //共通設定
-        "ms-azuretools.vscode-containers",
-        "usernamehw.errorlens",
-        "esbenp.prettier-vscode",
-        "mechatroner.rainbow-csv",
-        "mhutchie.git-graph",
-        "donjayamanne.githistory",
-        //py
-        "ms-python.python",
-        "charliermarsh.ruff",
-        //js
-        "dbaeumer.vscode-eslint",
-        "bradlc.vscode-tailwindcss"
+        /* 拡張機能 */
+        /* 共通 */
+        "ms-azuretools.vscode-containers", //devcontainer
+        "usernamehw.errorlens", //エラーがある行の横に自動的にエラー文章を表示
+        "esbenp.prettier-vscode", //コード全般の整形
+        "mosapride.zenkaku", //全角スペース検知
+        //"oderwat.indent-rainbow", //インデントに色付け
+        "mechatroner.rainbow-csv", //csv色付け
+        "christian-kohler.path-intellisense", //パス候補表示
+        "mhutchie.git-graph", //gitのコミット履歴をグラフ表示
+        "donjayamanne.githistory", //gitのログをわかりやすく表示
+        //"eamodio.gitlens", //git誰がどのコードを書いたかわかりやすくする
+        "shardulm94.trailing-spaces", //行の最後にある無駄なスペースを可視化
+        //"streetsidesoftware.code-spell-checker", //英語のスペルチェック(タイポ対策)
+
+        /* python */
+        //"ms-python.python",
+        //"charliermarsh.ruff", //python構文チェック
+
+        /* javascript */
+        "dbaeumer.vscode-eslint", //js,ts構文チェック
+
+        /* html,css */
+        "htmlhint.vscode-htmlhint", //html構文チェック
+        "formulahendry.auto-rename-tag", //<dev></dev>などを変えるとき、自動で同期
+        "bradlc.vscode-tailwindcss", //tailwind-cssの構文チェック
+        "ecmel.vscode-html-css" //class名やid名を入力する際に補完
       ],
       "settings": {
-        //一般設定
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        /* 共通設定 */
+        "editor.defaultFormatter": "esbenp.prettier-vscode", //指定しない限りpretterで整形
         "editor.formatOnSave": true,
-        //Python
+        /* python */
         "python.analysis.typeCheckingMode": "standard",
         "[python]": {
-          "editor.defaultFormatter": "charliermarsh.ruff",
-          "editor.formatOnSave": true
+          //  "editor.defaultFormatter": "charliermarsh.ruff",
         }
       }
     }

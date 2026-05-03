@@ -3,11 +3,10 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    //プロジェクトルートからimportしたいから
+    //@を"(projectroot)/src/"に設定
     "paths": {
       "@/*": ["./src/*"] // @/ を src/ に置き換える
     },
-    // ...他の設定
 
     /* React / Vite 用の設定 */
     "jsx": "react-jsx",
