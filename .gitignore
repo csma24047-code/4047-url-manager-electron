@@ -12,13 +12,17 @@
 !/.gitignore
 !/readme.txt
 
-!**/*.html
-!**/*.js
+#一般
 !**/*.json
+!**/*.html
 !**/*.css
+#js
+!**/*.js
 !**/*.ts
+!**/*tsx
 
 
 #除外
 *node_modules/
 *dist/
+*output/

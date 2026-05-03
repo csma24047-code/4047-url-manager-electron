@@ -7,9 +7,10 @@
   "scripts": {
     "react:build": "vite build",
     "electron:build": "tsc && tsc-alias",
-    "build": "npm run react:build && npm run electron:build",
-    "start": "npm run build && electron . --no-sandbox --disable-gpu",
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron . --no-sandbox\""
+    "full-build-app": "npm run react:build && npm run electron:build",
+    "launch-app": "electron . --no-sandbox --disable-gpu",
+    "full-build-and-launch-app": "npm run full-build-app && npm run launch-app",
+    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && NODE_ENV=development electron . --no-sandbox\""
   },
   "author": "Jane Doe",
   "license": "MIT",

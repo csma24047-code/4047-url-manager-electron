@@ -9,6 +9,15 @@ export default defineConfig({
   // 2. Electronで読み込むために「相対パス」を指定する
   base: "./",
 
+  server: {
+    watch: {
+      usePolling: true, // これを追加！
+      interval: 100, // 0.1秒ごとにチェックする設定（任意）
+    },
+    host: true, // Dockerからアクセス可能にするために必要
+    strictPort: true,
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"), // @ を src に割り当て

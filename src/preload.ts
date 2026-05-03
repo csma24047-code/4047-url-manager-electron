@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   // Mainへの通知
@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   // Mainからの命令
   onUpdateViewHtml: (callback: (data: any) => void) => {
-    ipcRenderer.on("update-urls", (_event, value) => callback(value));
+    // _event に : any を追加
+    ipcRenderer.on("update-urls", (_event: any, value: any) => callback(value));
   },
 });

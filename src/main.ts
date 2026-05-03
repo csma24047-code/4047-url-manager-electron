@@ -15,16 +15,24 @@ export function create_window(options: {
   preloadPath: string;
   htmlPath: string;
 }): void {
-  const win = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
     webPreferences: {
-      preload: options.preloadPath,
-      contextIsolation: true,
+      contextIsolation: true, // コンテキスト分離を有効化
+      nodeIntegration: false, // レンダラーでのNode.js利用を無効化（推奨）
+      preload: options.preloadPath, // 橋渡し役のスクリプト
     },
   });
-
-  win.loadFile(options.htmlPath);
+  // 開発時 (npm run dev) は Vite のサーバーを表示
+  if (process.env.NODE_ENV === "development") {
+    console.log("★★★ 開発モードで起動しています：URLを読み込みます ★★★");
+    mainWindow.loadURL("http://localhost:5173");
+  } else {
+    // 本番ビルド後は dist 内のファイルを読み込む
+    console.log("★★★ 本番モードで起動しています：ファイルを読み込みます ★★★");
+    mainWindow.loadFile(options.htmlPath);
+  }
 }
 
 export function registerIpcHandlers(jsonPath: string) {
