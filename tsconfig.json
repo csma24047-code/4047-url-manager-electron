@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
 
     //@を"(projectroot)/src/"に設定
     "paths": {
@@ -26,8 +25,7 @@
 
     /* 型チェックの厳しさ */
     "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noEmit": false // tscでファイルを出力するのでfalseでOK
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

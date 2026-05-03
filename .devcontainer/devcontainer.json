@@ -61,7 +61,7 @@
         /* python */
         "python.analysis.typeCheckingMode": "standard",
         "[python]": {
-          //  "editor.defaultFormatter": "charliermarsh.ruff",
+          //  "editor.defaultFormatter": "charliermarsh.ruff",//pythonはruffで整形
         }
       }
     }

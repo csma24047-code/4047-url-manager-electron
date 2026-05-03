@@ -5,11 +5,11 @@
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
-    "react:build": "vite build",
-    "electron:build": "tsc && tsc-alias",
-    "full-build-app": "npm run react:build && npm run electron:build",
-    "launch-app": "electron . --no-sandbox --disable-gpu",
-    "full-build-and-launch-app": "npm run full-build-app && npm run launch-app",
+    "type-check": "tsc",
+    "build:react": "vite build",
+    "build": "npm run type-check && npm run build:react",
+    "launch": "electron . --no-sandbox --disable-gpu",
+    "build:launch": "npm run build && npm run launch",
     "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && NODE_ENV=development electron . --no-sandbox\""
   },
   "author": "Jane Doe",
@@ -21,20 +21,19 @@
     "react-dom": "^19.2.5"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.2.4",
+    "@tailwindcss/vite": "^4.2.4",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
-    "autoprefixer": "^10.5.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "concurrently": "^9.2.1",
-    "cpx": "^1.5.0",
     "cross-env": "^10.1.0",
-    "postcss": "^8.5.13",
+    "electron-vite": "^5.0.0",
     "tailwindcss": "^4.2.4",
-    "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3",
-    "vite": "^8.0.10",
+    "vite": "^7.3.2",
+    "vite-plugin-externalize-deps": "^0.10.0",
+    "vite-tsconfig-paths": "^6.1.1",
     "wait-on": "^9.0.5"
   }
 }

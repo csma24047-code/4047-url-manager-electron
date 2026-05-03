@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import path from "path";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   // 1. Reactを使えるようにするプラグイン
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
 
   // 2. Electronで読み込むために「相対パス」を指定する
   base: "./",
@@ -21,7 +22,7 @@ export default defineConfig({
     },
   },
 
-  //viteがdocker上でリアルタイムでファイル変更を監視するための設定
+  //viteがdocker上において、リアルタイムでファイル変更を監視するための設定
   server: {
     watch: {
       usePolling: true, // これを追加！
