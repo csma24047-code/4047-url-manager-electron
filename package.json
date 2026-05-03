@@ -3,14 +3,11 @@
   "version": "1.0.0",
   "description": "Hello World!!",
   "type": "module",
-  "main": "dist/main.js",
+  "main": "./out/main/index.js",
   "scripts": {
-    "type-check": "tsc",
-    "build:react": "vite build",
-    "build": "npm run type-check && npm run build:react",
-    "launch": "electron . --no-sandbox --disable-gpu",
-    "build:launch": "npm run build && npm run launch",
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && NODE_ENV=development electron . --no-sandbox\""
+    "build": "electron-vite build ",
+    "preview": "dbus-run-session electron-vite preview -- --no-sandbox --disable-gpu",
+    "dev": "dbus-run-session electron-vite dev -- --no-sandbox --disable-gpu"
   },
   "author": "Jane Doe",
   "license": "MIT",

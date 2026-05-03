@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.join(__dirname, "..");
 //自作ファイル
-import { pickAndReadJsonFile } from "@/file_io_func.js";
-import { parseTxtToUrlItems } from "@/pure_func.js";
+import { pickAndReadJsonFile } from "./file_io_func.js";
+import { parseTxtToUrlItems } from "./pure_func.js";
 
 //ウィンドウ作成
 export function create_window(options: {
@@ -19,6 +19,7 @@ export function create_window(options: {
     width: 1600,
     height: 900,
     webPreferences: {
+      sandbox: false, // preloadのcommonjs縛りを緩めるため
       contextIsolation: true, // コンテキスト分離を有効化
       nodeIntegration: false, // レンダラーでのNode.js利用を無効化（推奨）
       preload: options.preloadPath, // 橋渡し役のスクリプト
@@ -47,9 +48,10 @@ export function registerIpcHandlers(jsonPath: string) {
 
 // アプリの起動
 export function initialize_app() {
-  const preloadPath = path.join(projectRoot, "dist", "preload.js");
-  const htmlPath = path.join(projectRoot, "dist", "index.html");
-  const jsonPath = path.join(projectRoot, "urls.json");
+  //実行場所はout/main/index.js(src/main/index.tsではない)
+  const preloadPath = path.join(__dirname, "../preload/preload.mjs"); // preloadは通常 .mjs か .js
+  const htmlPath = path.join(__dirname, "../renderer/index.html");
+  const jsonPath = path.join(__dirname, "../../output/urls.json");
 
   app.whenReady().then(() => {
     registerIpcHandlers(jsonPath);
