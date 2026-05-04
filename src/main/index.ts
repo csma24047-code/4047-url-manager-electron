@@ -1,11 +1,8 @@
 //electronを使用
 import { app, BrowserWindow, ipcMain } from "electron";
 //パス解決
-import { fileURLToPath } from "url";
 import * as path from "path";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.join(__dirname, "..");
+
 //自作ファイル
 import { pickAndReadJsonFile } from "@/main/file_io_func";
 import { parseTxtToUrlItems } from "@/main/pure_func";
