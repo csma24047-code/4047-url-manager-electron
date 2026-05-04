@@ -4,8 +4,9 @@
   "rsc": false,
   "tsx": true,
   "tailwind": {
+    "config": "",
     "css": "src/renderer/index.css",
-    "baseColor": "zinc",
+    "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },

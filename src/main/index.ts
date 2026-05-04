@@ -45,8 +45,8 @@ export function registerIpcHandlers(jsonPath: string) {
 
 // アプリの起動
 export function initialize_app() {
-  //実行場所はout/main/index.js(src/main/index.tsではない)
-  const preloadPath = path.join(__dirname, "../preload/preload.cjs"); // preloadは通常 .mjs か .js
+  //実行場所はout/main/index.cjs
+  const preloadPath = path.join(__dirname, "../preload/preload.cjs");
   const htmlPath = path.join(__dirname, "../renderer/index.html");
   const jsonPath = path.join(__dirname, "../../output/urls.json");
 
