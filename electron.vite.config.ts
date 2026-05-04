@@ -1,5 +1,6 @@
 import { defineConfig } from "electron-vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
@@ -22,7 +23,7 @@ export default defineConfig({
       rollupOptions: {
         output: {
           format: "cjs", // import を require に変換して出力
-          entryFileNames: "preload.js",
+          entryFileNames: "preload.cjs",
         },
       },
     },
@@ -33,7 +34,7 @@ export default defineConfig({
     },
   },
   renderer: {
-    plugins: [react(), tsconfigPaths()],
+    plugins: [tailwindcss(), react(), tsconfigPaths()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

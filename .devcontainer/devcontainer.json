@@ -38,8 +38,8 @@
         //"streetsidesoftware.code-spell-checker", //英語のスペルチェック(タイポ対策)
 
         /* python */
-        //"ms-python.python",
-        //"charliermarsh.ruff", //python構文チェック
+        "ms-python.python",
+        "charliermarsh.ruff", //python構文チェック
 
         /* javascript */
         "dbaeumer.vscode-eslint", //js,ts構文チェック
@@ -57,7 +57,7 @@
         /* python */
         "python.analysis.typeCheckingMode": "standard",
         "[python]": {
-          //  "editor.defaultFormatter": "charliermarsh.ruff",//pythonはruffで整形
+          "editor.defaultFormatter": "charliermarsh.ruff" //pythonはruffで整形
         }
       }
     }

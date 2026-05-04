@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+/* @variant は @theme の「外」に書く */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ここには変数やキーフレームのみを記述 */
+  --font-sans: "Inter", ui-sans-serif, system-ui;
+  /* shadcn/ui 用の変数などはここ */
+}
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #09090b;
+    /* ...他の変数 */
+  }
+
+  .dark {
+    --background: #1d1d28;
+    --foreground: #fafafa;
+    /* ...他の変数 */
+  }
+}
