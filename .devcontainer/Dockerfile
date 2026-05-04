@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/devcontainers/javascript-node:20
 
 WORKDIR /app
 
+USER root
+
 # システムライブラリのインストール（一番上に持ってくる）
 RUN apt-get update && apt-get install -y \
     libgtk-3-0 \
@@ -11,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     libgbm-dev \
     xvfb \
     fonts-noto-cjk \
+    dbus \
     && rm -rf /var/lib/apt/lists/*
 
 # 先にフォルダを作って、所有者を node に変えておく(devcontainerのmountsでエラーを出さないために)

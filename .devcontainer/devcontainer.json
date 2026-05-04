@@ -1,8 +1,7 @@
 {
   "name": "Electron Dev Container",
   "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
+    "dockerfile": "Dockerfile"
   },
   "runArgs": ["--net=host", "--privileged"],
   "containerEnv": {
@@ -11,7 +10,8 @@
   //既存のライブラリをnpm installで再利用
   //pruneでpackage.jsonにないものは削除
   //sudo ~:「管理者として命ずる。このフォルダと、今後作る中身のすべてを node の持ち物に変更せよ。」の意
-  "postCreateCommand": "sudo chown -R node:node /home/node/.vscode-server/extensions && npm install && npm prune",
+  //dbusを最初から実行しておく(エラーメッセージをなくすため)
+  "postCreateCommand": "sudo chown -R node:node /home/node/.vscode-server/extensions && npm install && npm prune && sudo service dbus start",
   "mounts": [
     {
       "source": "vscode-extensions-cache",

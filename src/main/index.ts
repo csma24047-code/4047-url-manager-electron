@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.join(__dirname, "..");
 //自作ファイル
-import { pickAndReadJsonFile } from "./file_io_func.js";
-import { parseTxtToUrlItems } from "./pure_func.js";
+import { pickAndReadJsonFile } from "@/main/file_io_func";
+import { parseTxtToUrlItems } from "@/main/pure_func";
 
 //ウィンドウ作成
 export function create_window(options: {

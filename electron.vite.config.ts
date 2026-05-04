@@ -1,4 +1,4 @@
-import { defineConfig, externalizeDepsPlugin } from "electron-vite";
+import { defineConfig } from "electron-vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
@@ -10,19 +10,9 @@ export default defineConfig({
       externalizeDeps: true,
     },
     resolve: {
-      //@を"(projectroot)/src/"に設定
       alias: {
-        "@": path.resolve(__dirname, "./src"), // @ を src に割り当て
+        "@": path.resolve(__dirname, "./src"),
       },
-    },
-    //viteがdocker上において、リアルタイムでファイル変更を監視するための設定
-    server: {
-      watch: {
-        usePolling: true, // これを追加！
-        interval: 100, // 0.1秒ごとにチェックする設定（任意）
-      },
-      host: true, // Dockerからアクセス可能にするために必要
-      strictPort: true,
     },
   },
   preload: {
@@ -36,31 +26,33 @@ export default defineConfig({
         },
       },
     },
-    //viteがdocker上において、リアルタイムでファイル変更を監視するための設定
-    server: {
-      watch: {
-        usePolling: true, // これを追加！
-        interval: 100, // 0.1秒ごとにチェックする設定（任意）
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
-      host: true, // Dockerからアクセス可能にするために必要
-      strictPort: true,
     },
   },
   renderer: {
     plugins: [react(), tsconfigPaths()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src/renderer"),
+        "@": path.resolve(__dirname, "./src"),
       },
     },
     //viteがdocker上において、リアルタイムでファイル変更を監視するための設定
     server: {
       watch: {
         usePolling: true, // これを追加！
-        interval: 100, // 0.1秒ごとにチェックする設定（任意）
+        interval: 100, // x秒ごとに更新チェック
       },
       host: true, // Dockerからアクセス可能にするために必要
       strictPort: true,
+
+      // 追記：ブラウザ側から見た接続先を明示的に指定
+      hmr: {
+        host: "localhost",
+        port: 5173,
+      },
     },
   },
 });
