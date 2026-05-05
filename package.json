@@ -1,16 +1,16 @@
 {
-  "name": "my-electron-app",
+  "name": "example_app_name",
   "version": "1.0.0",
   "description": "Hello World!!",
   "type": "module",
   "main": "./out/main/index.js",
   "scripts": {
-    "build": "electron-vite build ",
+    "build": "electron-vite build",
     "preview": "dbus-run-session electron-vite preview -- --no-sandbox --disable-gpu",
     "dev": "dbus-run-session electron-vite dev -- --no-sandbox --disable-gpu"
   },
-  "author": "Jane Doe",
-  "license": "MIT",
+  "author": "exmaple_author",
+  "license": "example_license",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -26,10 +26,12 @@
     "electron": "^41.3.0",
     "electron-store": "^11.0.2",
     "lucide-react": "^1.14.0",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.5",
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.75.0",
+    "react-resizable-panels": "^4.11.0",
     "recharts": "^2.15.4",
     "shadcn": "^4.6.0",
     "tailwind-merge": "^3.5.0",

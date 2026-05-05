@@ -28,7 +28,7 @@
         "usernamehw.errorlens", //エラーがある行の横に自動的にエラー文章を表示
         "esbenp.prettier-vscode", //コード全般の整形
         "mosapride.zenkaku", //全角スペース検知
-        //"oderwat.indent-rainbow", //インデントに色付け
+        "oderwat.indent-rainbow", //インデントに色付け
         "mechatroner.rainbow-csv", //csv色付け
         "christian-kohler.path-intellisense", //パス候補表示
         "mhutchie.git-graph", //gitのコミット履歴をグラフ表示

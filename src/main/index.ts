@@ -1,5 +1,5 @@
 //electronを使用
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, Menu } from "electron";
 //パス解決
 import * as path from "path";
 
@@ -15,20 +15,21 @@ export function create_window(options: {
   const mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
+    frame: false, // 完全にhtml側のみで画面を構成()
     webPreferences: {
-      sandbox: false, // preloadのcommonjs縛りを緩めるため
       contextIsolation: true, // コンテキスト分離を有効化
       nodeIntegration: false, // レンダラーでのNode.js利用を無効化（推奨）
       preload: options.preloadPath, // 橋渡し役のスクリプト
     },
   });
+
   // 開発時 (npm run dev) は Vite のサーバーを表示
   if (process.env.NODE_ENV === "development") {
-    console.log("★★★ 開発モードで起動しています：URLを読み込みます ★★★");
+    console.log("★★★ dev mode ★★★");
     mainWindow.loadURL("http://localhost:5173");
   } else {
     // 本番ビルド後は dist 内のファイルを読み込む
-    console.log("★★★ 本番モードで起動しています：ファイルを読み込みます ★★★");
+    console.log("★★★ app mode ★★★");
     mainWindow.loadFile(options.htmlPath);
   }
 }
