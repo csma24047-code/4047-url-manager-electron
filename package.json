@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Hello World!!",
   "type": "module",
-  "main": "./out/main/index.js",
+  "main": "./out/main/main.js",
   "scripts": {
     "build": "electron-vite build",
     "preview": "dbus-run-session electron-vite preview -- --no-sandbox --disable-gpu",

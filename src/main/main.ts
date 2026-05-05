@@ -1,11 +1,11 @@
 //electronを使用
-import { app, BrowserWindow, ipcMain, Menu } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 //パス解決
 import * as path from "path";
 
 //自作ファイル
-import { pickAndReadJsonFile } from "@/main/file_io_func";
-import { parseTxtToUrlItems } from "@/main/pure_func";
+import { pickAndReadJsonFile } from "@/main/file-io-func";
+import { parseTxtToUrlItems } from "@/main/pure-func";
 
 //ウィンドウ作成
 export function create_window(options: {
@@ -21,6 +21,23 @@ export function create_window(options: {
       nodeIntegration: false, // レンダラーでのNode.js利用を無効化（推奨）
       preload: options.preloadPath, // 橋渡し役のスクリプト
     },
+  });
+
+  // ウィンドウ操作の受信
+  ipcMain.on("window-control", (event, action) => {
+    switch (action) {
+      case "minimize":
+        mainWindow.minimize();
+        break;
+      case "maximize":
+        mainWindow.isMaximized()
+          ? mainWindow.unmaximize()
+          : mainWindow.maximize();
+        break;
+      case "close":
+        mainWindow.close();
+        break;
+    }
   });
 
   // 開発時 (npm run dev) は Vite のサーバーを表示
@@ -48,7 +65,7 @@ export function registerIpcHandlers(jsonPath: string) {
 export function initialize_app() {
   //実行場所はout/main/index.cjs
   const preloadPath = path.join(__dirname, "../preload/preload.cjs");
-  const htmlPath = path.join(__dirname, "../renderer/index.html");
+  const htmlPath = path.join(__dirname, "../renderer/renderer.html");
   const jsonPath = path.join(__dirname, "../../output/urls.json");
 
   app.whenReady().then(() => {
