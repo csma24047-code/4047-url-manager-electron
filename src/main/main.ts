@@ -1,6 +1,5 @@
 //electronを使用
 import { app, BrowserWindow, ipcMain } from "electron";
-//パス解決
 import * as path from "path";
 
 //自作ファイル
@@ -23,25 +22,8 @@ export function create_window(options: {
     },
   });
 
-  // ウィンドウ操作の受信
-  ipcMain.on("window-control", (event, action) => {
-    switch (action) {
-      case "minimize":
-        mainWindow.minimize();
-        break;
-      case "maximize":
-        mainWindow.isMaximized()
-          ? mainWindow.unmaximize()
-          : mainWindow.maximize();
-        break;
-      case "close":
-        mainWindow.close();
-        break;
-    }
-  });
-
-  // 開発時 (npm run dev) は Vite のサーバーを表示
   if (process.env.NODE_ENV === "development") {
+    // 開発時 (npm run dev) は Vite のサーバーを表示
     console.log("★★★ dev mode ★★★");
     mainWindow.loadURL("http://localhost:5173");
   } else {
@@ -50,6 +32,25 @@ export function create_window(options: {
     mainWindow.loadFile(options.htmlPath);
   }
 }
+
+//ブラウザ操作がされたとき
+ipcMain.on("window-control", (event, action) => {
+  // 操作対象のウィンドウを特定する
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return;
+
+  switch (action) {
+    case "minimize":
+      win.minimize();
+      break;
+    case "maximize":
+      win.isMaximized() ? win.unmaximize() : win.maximize();
+      break;
+    case "close":
+      win.close();
+      break;
+  }
+});
 
 export function registerIpcHandlers(jsonPath: string) {
   //ファイルを読み込んで画面に表示

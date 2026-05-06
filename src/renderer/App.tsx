@@ -19,7 +19,8 @@ export function App() {
         <div className="flex-1 w-full min-h-0">
           <ResizablePanelGroup orientation="horizontal" className="h-full">
             {/*左側パネル*/}
-            <ResizablePanel defaultSize={50} minSize={25} maxSize={75}>
+            <ResizablePanel defaultSize="10%" minSize="10%">
+              {/* "25%" と書かず {25} とするとshadcn/ui上で正しく認識されないので注意 */}
               <div className="flex h-full flex-col justify-between">
                 <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis ">
                   <h2 className="text-2xl font-bold mb-4">項目一覧</h2>
@@ -47,8 +48,8 @@ export function App() {
 
             <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
-            {/*右側パネル*/}
-            <ResizablePanel defaultSize={80}>
+            {/*中央パネル*/}
+            <ResizablePanel defaultSize="50%" minSize="25%">
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">アイテムリスト</h1>
 
@@ -71,7 +72,7 @@ export function App() {
             <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
             {/*右側パネル*/}
-            <ResizablePanel defaultSize={80}>
+            <ResizablePanel defaultSize="40%" minSize="10%">
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">詳細</h1>
               </ScrollArea>
