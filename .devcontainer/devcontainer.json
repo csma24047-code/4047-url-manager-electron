@@ -3,7 +3,6 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "runArgs": ["--net=host", "--privileged"],
   "containerEnv": {
     "DISPLAY": ":0", // WSLgの標準ディスプレイ番号
     "WAYLAND_DISPLAY": "wayland-0", // Waylandを優先
@@ -16,7 +15,7 @@
   sudo ~:「管理者として命ずる。このフォルダと、今後作る中身のすべてを node の持ち物に変更せよ。」の意
   dbusを最初から実行しておく(エラーメッセージをなくすため)
   */
-  "postCreateCommand": "sudo chown -R node:node /home/node/.vscode-server/extensions && npm install && npm prune && sudo service dbus start",
+  "postCreateCommand": "sudo chown -R node:node /home/node/.vscode-server/extensions && npm install && npm prune",
   "mounts": [
     // WSLgのシステムと通信するためのパスをコンテナに共有する
     "source=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg,target=/mnt/wslg,type=bind",
