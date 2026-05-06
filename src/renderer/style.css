@@ -119,6 +119,7 @@
   body,
   :where(#root, #app, __next) {
     height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden; /* スクロールバーが二重に出るのを防ぐ */
@@ -131,13 +132,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* 独自のユーティリティとして定義 */
-@utility drag-region {
-  -webkit-app-region: drag;
-}
-
-@utility no-drag {
-  -webkit-app-region: no-drag;
 }

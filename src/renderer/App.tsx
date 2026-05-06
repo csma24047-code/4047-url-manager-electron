@@ -10,8 +10,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { TitleBar } from "@/components/TitleBar";
 
-import React from "react";
-
 export function App() {
   const handleMouseDown = () => {
     (window as any).electronAPI.send("window-drag-start");

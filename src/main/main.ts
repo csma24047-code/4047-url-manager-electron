@@ -1,5 +1,6 @@
 //electronを使用
 import { app, BrowserWindow, ipcMain, screen } from "electron";
+app.disableHardwareAcceleration(); // これを追加
 import * as path from "path";
 
 //自作ファイル
@@ -14,23 +15,30 @@ export function create_window(options: {
   const mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
-    frame: false, // 完全にhtml側のみで画面を構成()
+    show: false, //準備ができるまで画面を表示させない
+    frame: false,
     webPreferences: {
-      contextIsolation: true, // コンテキスト分離を有効化
-      nodeIntegration: false, // レンダラーでのNode.js利用を無効化（推奨）
-      preload: options.preloadPath, // 橋渡し役のスクリプト
+      contextIsolation: true,
+      nodeIntegration: false,
+      preload: options.preloadPath,
+      sandbox: false,
     },
   });
 
+  // ★読み込みは関数の外側（すぐ下）で行う
   if (process.env.NODE_ENV === "development") {
-    // 開発時 (npm run dev) は Vite のサーバーを表示
     console.log("★★★ dev mode ★★★");
     mainWindow.loadURL("http://localhost:5173");
   } else {
-    // 本番ビルド後は dist 内のファイルを読み込む
     console.log("★★★ app mode ★★★");
     mainWindow.loadFile(options.htmlPath);
   }
+
+  // ★準備ができたら表示する
+  mainWindow.once("ready-to-show", () => {
+    mainWindow.show();
+    // mainWindow.webContents.openDevTools(); // 必要ならここで開く（ただし別ウィンドウ推奨）
+  });
 }
 
 //ブラウザ操作がされたとき
@@ -107,7 +115,7 @@ export function registerIpcHandlers(jsonPath: string) {
 export function initialize_app() {
   //実行場所はout/main/index.cjs
   const preloadPath = path.join(__dirname, "../preload/preload.cjs");
-  const htmlPath = path.join(__dirname, "../renderer/renderer.html");
+  const htmlPath = path.join(__dirname, "../renderer/index.html");
   const jsonPath = path.join(__dirname, "../../output/urls.json");
 
   app.whenReady().then(() => {
