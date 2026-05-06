@@ -15,6 +15,8 @@ export function create_window(options: {
   const mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
+    titleBarStyle: "hidden",
+    resizable: true,
     show: false, //準備ができるまで画面を表示させない
     frame: false,
     webPreferences: {
