@@ -16,6 +16,7 @@ export function create_window(options: {
     width: 1600,
     height: 900,
     show: false, //準備ができるまで画面を表示させない
+    resizable: true,
     frame: false,
     webPreferences: {
       contextIsolation: true,
@@ -58,47 +59,6 @@ ipcMain.on("window-control", (event, action) => {
       win.close();
       break;
   }
-});
-
-// main.ts
-let isDragging = false;
-let offset = { x: 0, y: 0 };
-
-ipcMain.on("window-drag-start", (event) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (!win) return;
-
-  const mousePos = screen.getCursorScreenPoint();
-
-  // getPosition() は [number, number] を返しますが、
-  // 万が一に備えてデフォルト値 [0, 0] を設定するか、win があることを再確認します
-  const position = win.getPosition();
-  const winX = position[0] ?? 0; // undefined の場合は 0 を使う
-  const winY = position[1] ?? 0;
-
-  offset = {
-    x: mousePos.x - winX,
-    y: mousePos.y - winY,
-  };
-  isDragging = true;
-});
-
-ipcMain.on("window-drag-move", (event) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
-  // win が存在し、かつドラッグ中であることを厳密にチェック
-  if (!win || !isDragging) return;
-
-  const mousePos = screen.getCursorScreenPoint();
-
-  // 以前の座標計算を適用
-  win.setPosition(
-    Math.floor(mousePos.x - offset.x),
-    Math.floor(mousePos.y - offset.y),
-  );
-});
-
-ipcMain.on("window-drag-end", () => {
-  isDragging = false;
 });
 
 export function registerIpcHandlers(jsonPath: string) {
