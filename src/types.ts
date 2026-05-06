@@ -8,6 +8,8 @@ export interface IElectronAPI {
   // 3. 【受信】Mainからの「これ表示して」という命令を聴くための窓口
   // callbackにはMainから送られてきた UrlItem[] が渡される
   onUpdateViewHtml: (callback: (html: string) => void) => void;
+
+  send: (channel: string, data: any) => void; // これが必要
 }
 
 declare global {

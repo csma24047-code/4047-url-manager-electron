@@ -12,9 +12,8 @@ import {
 export function TitleBar() {
   const handleControl = (action: string) => {
     // Electronのメインプロセスに命令を送る (preload経由)
-    window.electron.send("window-control", action);
+    window.electronAPI.send("window-control", action);
   };
-
   return (
     <div className="flex items-center justify-between bg-background border-b select-none">
       {/* ドラッグ可能エリア */}
