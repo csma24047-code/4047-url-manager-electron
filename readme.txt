@@ -1,10 +1,23 @@
-VcxSrvをインストール(画面表示用)
-	vcxsrv-64.21.1.16.1.installer.exeをDL
-	Multiple windows→次に進んでいく→Disable access controlチェック→プライベートとプライバシーアクセスオン
-		"containerEnv": {
-			"DISPLAY": "host.docker.internal:0"
-		}
-	でディスプレイを指定
+wslgをインストール(画面表示用)
+	xeyes
+	で目玉が出るか確認ない場合は
+	sudo apt update && sudo apt install x11-apps -y
+	でインストール
+	パスワードがわからない場合
+		# WSLのデフォルトユーザーをroot（管理者）に切り替える
+		wsl -u root
+
+		# (Ubuntuが起動するので、そこでパスワードを上書き)
+		passwd thepo
+
+		# 新しいパスワードを2回入力（ここでも文字は見えません）
+		exit
+	devcontainer.jsonのmountsを設定
+		// WSL内のパスを Windows側から見える形式（\\wsl.localhost\...）で指定
+		"source=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg,target=/mnt/wslg,type=bind",
+		"source=\\\\wsl.localhost\\Ubuntu\\tmp\\.X11-unix,target=/tmp/.X11-unix,type=bind"
+	npm run ~
+	でUIがでたら成功
 
 shadcn/ui
 	入れ方
