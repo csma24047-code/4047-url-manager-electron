@@ -27,6 +27,7 @@
       "type": "volume"
     }
   ],
+  //以下vscodeの拡張機能とユーザ設定
   "customizations": {
     "vscode": {
       "extensions": [

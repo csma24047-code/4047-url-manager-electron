@@ -1,19 +1,24 @@
 //tailwindcssv4.0
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
-//自作
 import { ThemeProvider } from "@/components/theme-provider";
-import { ModeToggle } from "@/components/mode-toggle";
-import { TitleBar } from "@/components/TitleBar";
+import { TitleBar } from "@/components/title-bar";
+import { mainContents } from "@/components/main-contents";
+import { Button } from "@/components/ui/button";
 
 export function App() {
   return (
-    <div className="[-webkit-app-region:drag] select-none h-10 w-full">
-      タイトルバー（ここを掴んで移動）
+    <div className="flex flex-col gap-4 p-8">
+      {/* 1. 標準的なshadcnボタン（これで色が変わるか確認） */}
+      <Button variant="default">標準ボタン</Button>
+
+      {/* 2. 破壊的アクション用の赤いボタン（bg-destructive） */}
+      <Button variant="destructive">削除ボタン</Button>
+
+      {/* 3. drag領域に入れた場合（今回の問題の切り分け） */}
+      <div className="drag p-4 bg-gray-100">
+        <Button variant="outline" className="no-drag">
+          ドラッグ領域内のボタン
+        </Button>
+      </div>
     </div>
   );
 }
