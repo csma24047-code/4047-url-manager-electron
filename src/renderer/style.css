@@ -114,6 +114,16 @@
 }
 
 @layer base {
+  /* html, body, および Reactのルート(#rootなど)を画面いっぱいに広げる */
+  html,
+  body,
+  :where(#root, #app, __next) {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* スクロールバーが二重に出るのを防ぐ */
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

@@ -19,7 +19,7 @@ export function App() {
         <div className="flex-1 w-full min-h-0">
           <ResizablePanelGroup orientation="horizontal" className="h-full">
             {/*左側パネル*/}
-            <ResizablePanel defaultSize={5} minSize={150} maxSize={250}>
+            <ResizablePanel defaultSize={50} minSize={25} maxSize={75}>
               <div className="flex h-full flex-col justify-between">
                 <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis ">
                   <h2 className="text-2xl font-bold mb-4">項目一覧</h2>
@@ -36,11 +36,11 @@ export function App() {
                   </nav>
                 </div>
                 {/* 下部：Configセクション */}
-                <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis ">
-                  <button className="flex w-full items-center gap-2 p-2 text-sm hover:bg-accent rounded-md transition-colors">
+                <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+                  <div className="flex w-full items-center gap-2 p-2 text-sm hover:bg-accent rounded-md transition-colors cursor-pointer">
                     <span className="whitespace-nowrap font-bold">設定</span>
                     <ModeToggle />
-                  </button>
+                  </div>
                 </div>
               </div>
             </ResizablePanel>
