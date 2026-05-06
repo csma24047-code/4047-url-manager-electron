@@ -63,38 +63,48 @@ ipcMain.on("window-control", (event, action) => {
 // main.ts
 let isDragging = false;
 let offset = { x: 0, y: 0 };
+let startSize = { width: 0, height: 0 }; // ★サイズを記憶する箱を用意
 
 ipcMain.on("window-drag-start", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (!win) return;
 
   const mousePos = screen.getCursorScreenPoint();
-
-  // getPosition() は [number, number] を返しますが、
-  // 万が一に備えてデフォルト値 [0, 0] を設定するか、win があることを再確認します
   const position = win.getPosition();
-  const winX = position[0] ?? 0; // undefined の場合は 0 を使う
-  const winY = position[1] ?? 0;
+  const size = win.getSize();
 
+  // ?? 0 をつけることで、「もし左側が undefined なら 0 を使う」という命令になります
   offset = {
-    x: mousePos.x - winX,
-    y: mousePos.y - winY,
+    x: mousePos.x - (position[0] ?? 0),
+    y: mousePos.y - (position[1] ?? 0),
   };
+
+  // ここがエラーの核心：size[0] や size[1] が undefined の可能性を排除します
+  startSize = {
+    width: size[0] ?? 800, // デフォルトの幅（例：800）
+    height: size[1] ?? 600, // デフォルトの高さ（例：600）
+  };
+
   isDragging = true;
 });
 
 ipcMain.on("window-drag-move", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
-  // win が存在し、かつドラッグ中であることを厳密にチェック
   if (!win || !isDragging) return;
 
   const mousePos = screen.getCursorScreenPoint();
 
-  // 以前の座標計算を適用
-  win.setPosition(
-    Math.floor(mousePos.x - offset.x),
-    Math.floor(mousePos.y - offset.y),
-  );
+  // ★ setPosition ではなく setBounds を使う
+  // 「この位置へ行け、そしてサイズは絶対これ（startSize）だ！」と同時に命令する
+  win.setBounds(
+    {
+      x: Math.round(mousePos.x - offset.x), // floor ではなく round がおすすめ
+      y: Math.round(mousePos.y - offset.y),
+      width: startSize.width,
+      height: startSize.height,
+    },
+    false,
+  ); // 第2引数 false でアニメーションによる遅延を防ぐ
 });
 
 ipcMain.on("window-drag-end", () => {

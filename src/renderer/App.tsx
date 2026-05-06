@@ -14,10 +14,20 @@ export function App() {
   const handleMouseDown = () => {
     (window as any).electronAPI.send("window-drag-start");
 
-    // マウスを動かしている間と、離した時のイベントを登録
+    // --- ここから修正 ---
+    let ticking = false;
+
     const handleMouseMove = () => {
-      (window as any).electronAPI.send("window-drag-move");
+      if (!ticking) {
+        // 次の描画タイミングまで実行を待機
+        window.requestAnimationFrame(() => {
+          (window as any).electronAPI.send("window-drag-move");
+          ticking = false; // 実行が終わったらフラグを下ろす
+        });
+        ticking = true; // 待機中フラグを立てる
+      }
     };
+    // --- ここまで修正 ---
 
     const handleMouseUp = () => {
       (window as any).electronAPI.send("window-drag-end");
