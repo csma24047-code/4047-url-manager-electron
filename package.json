@@ -7,8 +7,8 @@
   "scripts": {
     "build": "electron-vite build",
     "start": "electron .",
-    "preview": "dbus-run-session electron-vite preview -- --no-sandbox --disable-gpu",
-    "dev": "dbus-run-session electron-vite dev -- --no-sandbox"
+    "preview": "electron-vite preview -- --no-sandbox --disable-gpu",
+    "dev": "electron-vite dev -- --no-sandbox"
   },
   "author": "exmaple_author",
   "license": "example_license",
