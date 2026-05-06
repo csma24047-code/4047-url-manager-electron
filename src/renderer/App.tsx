@@ -10,76 +10,51 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { TitleBar } from "@/components/TitleBar";
 
+import React from "react";
+
 export function App() {
+  const handleMouseDown = () => {
+    (window as any).electronAPI.send("window-drag-start");
+
+    // マウスを動かしている間と、離した時のイベントを登録
+    const handleMouseMove = () => {
+      (window as any).electronAPI.send("window-drag-move");
+    };
+
+    const handleMouseUp = () => {
+      (window as any).electronAPI.send("window-drag-end");
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
+
   return (
-    //systemだとdocker上では認識できないのでdevtoolで Emulate CSS media feature prefers-color-schemeをdarkにして変わればOK
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <div className="h-screen w-full flex flex-col overflow-hidden">
-        <TitleBar />
-        <div className="flex-1 w-full min-h-0">
-          <ResizablePanelGroup orientation="horizontal" className="h-full">
-            {/*左側パネル*/}
-            <ResizablePanel defaultSize="10%" minSize="10%">
-              {/* "25%" と書かず {25} とするとshadcn/ui上で正しく認識されないので注意 */}
-              <div className="flex h-full flex-col justify-between">
-                <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis ">
-                  <h2 className="text-2xl font-bold mb-4">項目一覧</h2>
-                  <nav className="text-sm text-muted-foreground">
-                    <div className="p-1 rounded text-secondary-foreground">
-                      すべてのアイテム
-                    </div>
-                    <div className="p-1 rounded text-secondary-foreground">
-                      お気に入り
-                    </div>
-                    <div className="p-1 rounded text-secondary-foreground">
-                      未整理
-                    </div>
-                  </nav>
-                </div>
-                {/* 下部：Configセクション */}
-                <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis">
-                  <div className="flex w-full items-center gap-2 p-2 text-sm hover:bg-accent rounded-md transition-colors cursor-pointer">
-                    <span className="whitespace-nowrap font-bold">設定</span>
-                    <ModeToggle />
-                  </div>
-                </div>
-              </div>
-            </ResizablePanel>
-
-            <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
-
-            {/*中央パネル*/}
-            <ResizablePanel defaultSize="50%" minSize="25%">
-              <ScrollArea className="h-full p-6">
-                <h1 className="text-2xl font-bold mb-6">アイテムリスト</h1>
-
-                {/* ここにカード（グリッド）を並べる */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* 実際のURLカードコンポーネントをここに配置 */}
-                  <div className="aspect-video border rounded-lg p-4 bg-card">
-                    URLの内容...
-                  </div>
-                  <div className="aspect-video border rounded-lg p-4 bg-card">
-                    URLの内容...
-                  </div>
-                  <div className="aspect-video border rounded-lg p-4 bg-card">
-                    URLの内容...
-                  </div>
-                </div>
-              </ScrollArea>
-            </ResizablePanel>
-
-            <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
-
-            {/*右側パネル*/}
-            <ResizablePanel defaultSize="40%" minSize="10%">
-              <ScrollArea className="h-full p-6">
-                <h1 className="text-2xl font-bold mb-6">詳細</h1>
-              </ScrollArea>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        background: "#1a1a1a",
+        color: "white",
+      }}
+    >
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          height: "100px",
+          width: "100%",
+          background: "#ff4444",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "move",
+          userSelect: "none",
+        }}
+      >
+        ここを掴んで自由に動かして！
       </div>
-    </ThemeProvider>
+    </div>
   );
 }

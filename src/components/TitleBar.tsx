@@ -15,7 +15,10 @@ export function TitleBar() {
     window.electronAPI.send("window-control", action);
   };
   return (
-    <div className="flex items-center justify-between bg-background border-b select-none">
+    <div
+      style={{ ["-webkit-app-region" as any]: "drag" }}
+      className="flex items-center justify-between bg-background border-b select-none"
+    >
       {/* ドラッグ可能エリア */}
       <div className="flex items-center flex-1 h-10 px-2 drag-region">
         <Menubar className="border-none bg-transparent no-drag">
