@@ -5,15 +5,24 @@
   },
   "runArgs": ["--net=host", "--privileged"],
   "containerEnv": {
-    "DISPLAY": "host.docker.internal:0"
+    "DISPLAY": ":0", // WSLgの標準ディスプレイ番号
+    "WAYLAND_DISPLAY": "wayland-0", // Waylandを優先
+    "XDG_RUNTIME_DIR": "/mnt/wslg/runtime-dir",
+    "ELECTRON_OZONE_PLATFORM_HINT": "wayland" // ElectronにWaylandを使うよう指示
   },
-  //既存のライブラリをnpm installで再利用
-  //pruneでpackage.jsonにないものは削除
-  //sudo ~:「管理者として命ずる。このフォルダと、今後作る中身のすべてを node の持ち物に変更せよ。」の意
-  //dbusを最初から実行しておく(エラーメッセージをなくすため)
+  /*
+  既存のライブラリをnpm installで再利用
+  pruneでpackage.jsonにないものは削除
+  sudo ~:「管理者として命ずる。このフォルダと、今後作る中身のすべてを node の持ち物に変更せよ。」の意
+  dbusを最初から実行しておく(エラーメッセージをなくすため)
+  */
   "postCreateCommand": "sudo chown -R node:node /home/node/.vscode-server/extensions && npm install && npm prune && sudo service dbus start",
   "mounts": [
+    // WSLgのシステムと通信するためのパスをコンテナに共有する
+    "source=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg,target=/mnt/wslg,type=bind",
+    "source=\\\\wsl.localhost\\Ubuntu\\tmp\\.X11-unix,target=/tmp/.X11-unix,type=bind",
     {
+      //vscodeの拡張機能を毎回DLしないようdokcer側にキャッシュを残す
       "source": "vscode-extensions-cache",
       "target": "/home/node/.vscode-server/extensions",
       "type": "volume"
