@@ -29,3 +29,7 @@ shadcn/ui
 	コンポネントDL方法
 		npx shadcn@latest add ～
 		～にコンポネント名でインストール
+
+git dockerで毎回リセットされるのでそのコピペ
+git config --global user.email "marty.go.go.pooh@gmail.com"
+git config --global user.name "mattynophoo-notepc"
