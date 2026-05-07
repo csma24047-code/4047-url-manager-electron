@@ -7,7 +7,7 @@ import {
   MenubarSeparator,
   MenubarShortcut,
   MenubarTrigger,
-} from "@/components/ui/menubar";
+} from "@/renderer/src/components/ui/menubar";
 
 export function TitleBar() {
   const handleControl = (action: string) => {

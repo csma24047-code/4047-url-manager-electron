@@ -1,8 +1,8 @@
 //tailwindcssv4.0
-import { ThemeProvider } from "@/components/theme-provider";
-import { TitleBar } from "@/components/title-bar";
-import { mainContents } from "@/components/main-contents";
-import { Button } from "@/components/ui/button";
+import { ThemeProvider } from "@/renderer/src/components/theme-provider";
+import { TitleBar } from "@/renderer/src/components/title-bar";
+import { mainContents } from "@/renderer/src/components/main-contents";
+import { Button } from "@/renderer/src/components/ui/button";
 
 export function App() {
   return (
