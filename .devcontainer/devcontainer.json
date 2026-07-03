@@ -4,23 +4,25 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "installOhMyZsh": "true",
+      "configureZshAsDefaultShell": "true",
+      "installOhMyZshConfig": "true"
+    }
+  },
   "containerEnv": {
     "DISPLAY": ":0", // WSLgの標準ディスプレイ番号
     "WAYLAND_DISPLAY": "wayland-0", // Waylandを優先
     "XDG_RUNTIME_DIR": "/mnt/wslg/runtime-dir",
     "ELECTRON_OZONE_PLATFORM_HINT": "wayland" // ElectronにWaylandを使うよう指示
   },
-  "postCreateCommand": "sudo chown -R vscode:vscode . & ln -s /workspace/node_modules /workspaces/url-manager-electron/node_modules",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   "mounts": [
     // WSLgのシステムと通信するためのパスをコンテナに共有する
     "source=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg,target=/mnt/wslg,type=bind",
-    "source=\\\\wsl.localhost\\Ubuntu\\tmp\\.X11-unix,target=/tmp/.X11-unix,type=bind",
-    {
-      //vscodeの拡張機能を毎回DLしないようdokcer側にキャッシュを残す
-      "source": "vscode-extensions-cache",
-      "target": "/home/node/.vscode-server/extensions",
-      "type": "volume"
-    }
+    "source=\\\\wsl.localhost\\Ubuntu\\tmp\\.X11-unix,target=/tmp/.X11-unix,type=bind"
   ],
   "customizations": {
     "vscode": {
@@ -42,7 +44,7 @@
         "ecmel.vscode-html-css" //class名やid名を入力する際に補完
       ],
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode", //指定しない限りpretterで整形
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
       }
     }
