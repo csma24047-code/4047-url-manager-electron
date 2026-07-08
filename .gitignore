@@ -25,5 +25,5 @@
 #除外
 *node_modules/
 *dist/
-*output/
+*database/
 *out/
