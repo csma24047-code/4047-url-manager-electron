@@ -15,7 +15,7 @@
   },
   "build": {
     "appId": "com.example.app",
-    "productName": "MyAwesomeApp",
+    "productName": "URLManager",
     "directories": {
       "output": "dist"
     },
