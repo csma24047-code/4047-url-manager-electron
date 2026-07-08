@@ -70,6 +70,15 @@ export function App() {
     setEditTags(item.tags.join(", "));
   };
 
+  // ★修正：カード以外の場所がクリックされたら確実に解除する
+  const handleContainerClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    // クリックされた要素、またはその親要素に「data-card」という属性がなければ選択解除する
+    if (!target.closest("[data-card='true']")) {
+      setSelectedItem(null);
+    }
+  };
+
   // ★追加：編集内容を保存する処理
   const handleUpdate = async () => {
     if (!selectedItem) return;
@@ -147,26 +156,6 @@ export function App() {
                       }`}
                     >
                       すべてのアイテム
-                    </div>
-                    <div
-                      onClick={() => setActiveTab("favorite")}
-                      className={`p-2 rounded cursor-pointer transition-colors ${
-                        activeTab === "favorite"
-                          ? "bg-accent text-accent-foreground font-bold"
-                          : "text-secondary-foreground hover:bg-accent"
-                      }`}
-                    >
-                      お気に入り
-                    </div>
-                    <div
-                      onClick={() => setActiveTab("uncategorized")}
-                      className={`p-2 rounded cursor-pointer transition-colors ${
-                        activeTab === "uncategorized"
-                          ? "bg-accent text-accent-foreground font-bold"
-                          : "text-secondary-foreground hover:bg-accent"
-                      }`}
-                    >
-                      未整理
                     </div>
                   </nav>
 
@@ -254,31 +243,34 @@ export function App() {
                 </div>
 
                 {/* スクロールエリア（検索結果を表示） */}
-                <div className="flex-1 min-h-0">
+                {/* スクロールエリア（検索結果を表示） */}
+                {/* ★大元のコンテナにのみ onClick を仕込む */}
+                <div className="flex-1 min-h-0" onClick={handleContainerClick}>
                   <ScrollArea className="h-full">
                     {filteredUrls.length === 0 ? (
                       <div className="text-center py-12 text-sm text-muted-foreground">
                         該当するアイテムが見つかりませんでした。
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4 min-h-full">
                         {filteredUrls.map((item) => (
-                          // 既存の grid 内の card の div を以下のように変更
                           <div
                             key={item.id}
-                            onClick={() => handleSelectCard(item)} // ★追加
-                            className={`border rounded-lg p-4 bg-card shadow-xs flex flex-col justify-between h-32 relative group cursor-pointer hover:border-primary transition-colors ${
+                            // ★データ属性 data-card="true" を付与して、目印にする
+                            data-card="true"
+                            onClick={() => handleSelectCard(item)}
+                            className={`border rounded-lg p-4 bg-card flex flex-col justify-between h-32 relative group cursor-pointer transition-all focus:outline-hidden ${
                               selectedItem?.id === item.id
-                                ? "ring-2 ring-primary"
-                                : "" // ★選択中のハイライト
+                                ? "border-primary bg-primary/5"
+                                : "border-border hover:border-primary/50"
                             }`}
                           >
                             <button
                               onClick={(e) => {
-                                e.stopPropagation(); // ★ 親のカードクリックイベント（詳細表示）が発動するのを防ぐ
+                                e.stopPropagation(); // 削除時はカード自体のイベント連鎖を防ぐだけでOK
                                 handleDelete(item.id);
                               }}
-                              className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors z-10" // ★z-10も足しておくとクリックしやすくなります
+                              className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors z-10"
                               title="削除"
                             >
                               <Trash2 size={16} />
@@ -289,9 +281,10 @@ export function App() {
                                 {item.title}
                               </h3>
                               <p
-                                onClick={() =>
-                                  window.electronAPI.openInBrowser(item.url)
-                                }
+                                onClick={(e) => {
+                                  e.stopPropagation(); // ★ここも別窓で開くだけなので連鎖を止める
+                                  window.electronAPI.openInBrowser(item.url);
+                                }}
                                 className="text-xs text-blue-500 hover:underline truncate mb-2 cursor-pointer inline-block max-w-full"
                                 title="ブラウザで開く"
                               >
@@ -303,8 +296,8 @@ export function App() {
                                 <span
                                   key={tag}
                                   onClick={(e) => {
-                                    e.stopPropagation(); // 親カードのクリックイベント等を防ぐ
-                                    setActiveTab(tag); // タグをクリックした際にも直接絞り込める
+                                    e.stopPropagation(); // ★タグ絞り込み時も連鎖を止める
+                                    setActiveTab(tag);
                                   }}
                                   className="text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
                                 >
@@ -325,7 +318,7 @@ export function App() {
 
             {/* 3. 右側パネル：詳細表示 */}
             {/* 3. 右側パネル：詳細表示 */}
-            <ResizablePanel defaultSize="40%" minSize="20%">
+            <ResizablePanel defaultSize="40%" minSize="20%" maxSize="45%">
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">
                   アイテムの詳細・編集
