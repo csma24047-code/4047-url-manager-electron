@@ -42,8 +42,15 @@ else
 fi
 
 # 5. node_modules のシンボリックリンク作成
-echo "==> node_modules のシンボリックリンクを作成します..."
+# /workspaces 配下の最初のディレクトリ名を取得（例: url-manager-electron）
+WORKSPACE_NAME=$(basename $(ls -d /workspaces/*/ | head -n 1))
+echo "==> node_modules のシンボリックリンクを作成します... ($WORKSPACE_NAME)"
+
 # リンク先がすでに存在する場合は削除して作り直す（エラー防止のために -f を付与）
-ln -sfn /workspace/node_modules /workspaces/url-manager-electron/node_modules
+ln -sfn /workspace/node_modules "/workspaces/$WORKSPACE_NAME/node_modules"
+
+echo "$USER 権限を付与します..."
+# シンボリックリンク（type l）を「除外（!）」して chown を実行
+sudo find . ! -type l -exec chown $USER:$USER {} +
 
 echo "==> すべてのセットアップが完了しました！"
