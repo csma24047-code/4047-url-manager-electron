@@ -3,10 +3,6 @@ import { app, BrowserWindow, ipcMain, screen } from "electron";
 app.disableHardwareAcceleration(); // これを追加
 import * as path from "path";
 
-//自作ファイル
-import { pickAndReadJsonFile } from "@/main/file-io-func";
-import { parseTxtToUrlItems } from "@/main/pure-func";
-
 //ウィンドウ作成
 export function create_window(options: {
   preloadPath: string;
@@ -15,9 +11,9 @@ export function create_window(options: {
   const mainWindow = new BrowserWindow({
     width: 1600,
     height: 900,
-    resizable: true,
-    show: false, //準備ができるまで画面を表示させない
-    frame: false,
+    resizable: true, //サイズを変更できるかどうか
+    show: false, //アプリ画面の準備ができるまで表示させない
+    frame: false, //標準のフレームを使わない
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -26,7 +22,7 @@ export function create_window(options: {
     },
   });
 
-  // ★読み込みは関数の外側（すぐ下）で行う
+  // モード選択
   if (process.env.NODE_ENV === "development") {
     console.log("★★★ dev mode ★★★");
     mainWindow.loadURL("http://localhost:5173");
@@ -35,10 +31,9 @@ export function create_window(options: {
     mainWindow.loadFile(options.htmlPath);
   }
 
-  // ★準備ができたら表示する
+  // 画面準備ができたら表示
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
-    // mainWindow.webContents.openDevTools(); // 必要ならここで開く（ただし別ウィンドウ推奨）
   });
 }
 
@@ -62,13 +57,7 @@ ipcMain.on("window-control", (event, action) => {
 });
 
 export function registerIpcHandlers(jsonPath: string) {
-  //ファイルを読み込んで画面に表示
-  ipcMain.on("load-urls", async (event) => {
-    const rawText = await pickAndReadJsonFile(jsonPath);
-    if (!rawText) return "";
-    const html = parseTxtToUrlItems(rawText);
-    event.reply("update-urls", html);
-  });
+  //後で追加
 }
 
 // アプリの起動
@@ -76,7 +65,7 @@ export function initialize_app() {
   //実行場所はout/main/index.cjs
   const preloadPath = path.join(__dirname, "../preload/preload.cjs");
   const htmlPath = path.join(__dirname, "../renderer/index.html");
-  const jsonPath = path.join(__dirname, "../../output/urls.json");
+  const jsonPath = path.join(__dirname, "../../database/urls.json");
 
   app.whenReady().then(() => {
     registerIpcHandlers(jsonPath);
