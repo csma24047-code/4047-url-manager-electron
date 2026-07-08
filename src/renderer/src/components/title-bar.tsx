@@ -8,7 +8,7 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/renderer/src/components/ui/menubar";
-import { controlWindow } from "@/renderer/src/lib/electron";
+import { IPC_CHANNELS } from "@/types/index";
 
 export function TitleBar() {
   return (
@@ -23,7 +23,7 @@ export function TitleBar() {
                 New Window <MenubarShortcut>⌘N</MenubarShortcut>
               </MenubarItem>
               <MenubarSeparator />
-              <MenubarItem onClick={() => controlWindow("close")}>
+              <MenubarItem onClick={() => window.electronAPI.closeWindow()}>
                 Quit
               </MenubarItem>
             </MenubarContent>
@@ -44,19 +44,19 @@ export function TitleBar() {
       {/* ウィンドウ操作ボタン (no-drag必須) */}
       <div className="no-drag flex">
         <button
-          onClick={() => controlWindow("minimize")}
+          onClick={() => window.electronAPI.minimizeWindow()}
           className="p-2 hover:bg-accent"
         >
           <Minus size={16} />
         </button>
         <button
-          onClick={() => controlWindow("maximize")}
+          onClick={() => window.electronAPI.maximizeWindow()}
           className="p-2 hover:bg-accent"
         >
           <Square size={14} />
         </button>
         <button
-          onClick={() => controlWindow("close")}
+          onClick={() => window.electronAPI.closeWindow()}
           className="p-2 hover:bg-destructive hover:text-destructive-foreground"
         >
           <X size={16} />

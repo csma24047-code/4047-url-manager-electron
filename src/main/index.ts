@@ -1,8 +1,11 @@
 //electronを使用
 import { app, BrowserWindow, ipcMain, screen } from "electron";
-app.disableHardwareAcceleration(); // これを追加
 import * as path from "path";
 import * as fs from "fs";
+
+import { IPC_CHANNELS } from "@/types/index";
+
+app.disableHardwareAcceleration(); // CPUのみでレンダリング
 
 //ウィンドウ作成
 export function create_window(options: {
@@ -59,7 +62,7 @@ ipcMain.on("window-control", (event, action) => {
 
 export function registerIpcHandlers(jsonPath: string) {
   // 画面側から「load-data」という名前でリクエストが来たら実行する処理
-  ipcMain.handle("load-data", async () => {
+  ipcMain.handle(IPC_CHANNELS.LOAD_DATA, async () => {
     try {
       // 1. 指定されたパス（urls.json）が存在するか確認
       if (!fs.existsSync(jsonPath)) {
@@ -90,7 +93,7 @@ export function registerIpcHandlers(jsonPath: string) {
       return { urls: [], settings: { darkMode: true } };
     }
   });
-  ipcMain.handle("save-url", async (_event, newUrlItem) => {
+  ipcMain.handle(IPC_CHANNELS.SAVE_URL, async (_event, newUrlItem) => {
     try {
       // 現在のファイルを読み込む
       const fileRaw = fs.readFileSync(jsonPath, "utf-8");
@@ -113,25 +116,28 @@ export function registerIpcHandlers(jsonPath: string) {
   });
 
   // ★新しく追加：URLの削除処理
-  ipcMain.handle("delete-url", async (_event, idToDelete: number) => {
-    try {
-      const fileRaw = fs.readFileSync(jsonPath, "utf-8");
-      const jsonData = JSON.parse(fileRaw);
+  ipcMain.handle(
+    IPC_CHANNELS.DELETE_URL,
+    async (_event, idToDelete: number) => {
+      try {
+        const fileRaw = fs.readFileSync(jsonPath, "utf-8");
+        const jsonData = JSON.parse(fileRaw);
 
-      // 指定されたID以外のデータだけで新しい配列を作る（＝指定されたIDを削除）
-      jsonData.urls = jsonData.urls.filter(
-        (item: any) => item.id !== idToDelete,
-      );
+        // 指定されたID以外のデータだけで新しい配列を作る（＝指定されたIDを削除）
+        jsonData.urls = jsonData.urls.filter(
+          (item: any) => item.id !== idToDelete,
+        );
 
-      fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2), "utf-8");
-      return { success: true };
-    } catch (error) {
-      console.error("データの削除失敗:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      return { success: false, error: errorMessage };
-    }
-  });
+        fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2), "utf-8");
+        return { success: true };
+      } catch (error) {
+        console.error("データの削除失敗:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        return { success: false, error: errorMessage };
+      }
+    },
+  );
 }
 
 // アプリの起動

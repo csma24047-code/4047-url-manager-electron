@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"; // ★ useEffect, useState を追加
 import { Trash2 } from "lucide-react";
 
+//reactコンポーネント
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -11,21 +12,8 @@ import { ThemeProvider } from "@/renderer/src/components/theme-provider";
 import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 
-// ★ ラッパーファイルから明示的に import する
-import {
-  loadAppData,
-  saveNewUrl,
-  deleteUrlById,
-} from "@/renderer/src/lib/electron";
-
-// URLアイテムの型定義
-interface URLItem {
-  id: number;
-  title: string;
-  url: string;
-  tags: string[];
-  addedAt: string;
-}
+//urlの型定義
+import { URLItem } from "@/types";
 
 export function App() {
   // ★ 取得したURLリストを管理するステート
@@ -33,7 +21,7 @@ export function App() {
 
   // ★ アプリ起動時にデータを1回だけ読み込む
   useEffect(() => {
-    loadAppData().then((data) => {
+    window.electronAPI.loadData().then((data) => {
       if (data && data.urls) {
         setUrls(data.urls);
       }
@@ -51,17 +39,15 @@ export function App() {
       addedAt: new Date().toISOString().split("T")[0] || "",
     };
 
-    const res = await saveNewUrl(newItem);
+    const res = await window.electronAPI.saveUrl(newItem);
     if (res.success) {
-      // 画面側のステートも更新して、再読み込みなしで即座に反映させる
       setUrls([...urls, newItem]);
     }
   };
 
   const handleDelete = async (id: number) => {
-    const res = await deleteUrlById(id);
+    const res = await window.electronAPI.deleteUrl(id);
     if (res.success) {
-      // 画面側のステートからも即座に消去する
       setUrls(urls.filter((item) => item.id !== id));
     }
   };
