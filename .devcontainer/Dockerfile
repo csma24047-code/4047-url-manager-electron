@@ -16,17 +16,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ######
 
 ### Node.js（npm）設定 ###
-# 作業ディレクトリを作成し、所有者を node ユーザーに変更
-WORKDIR /workspace
-RUN chown node:node /workspace
-
-# package.json を node ユーザーの所有権でコピー
-COPY --chown=node:node package*.json ./
-
-# node ユーザーに切り替えて npm ci を実行
+# 1. 先に node ユーザーに切り替える
 USER node
 
-# node ユーザーのホームディレクトリ配下にキャッシュをマウント
+# 2. この状態にすると、WORKDIR がフォルダを「node所有」で自動作成してくれる
+WORKDIR /my-workspaces
+
+# 3. package.json をコピー（USER node の状態なので自動で node 所有になります）
+COPY package*.json ./
+
+# 4. 直下に node_modules をインストール
 RUN --mount=type=cache,uid=1000,gid=1000,target=/home/node/.npm \
-    npm ci
+    npm ci && rm package*.json
 ######

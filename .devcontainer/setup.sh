@@ -47,7 +47,7 @@ WORKSPACE_NAME=$(basename $(ls -d /workspaces/*/ | head -n 1))
 echo "==> node_modules のシンボリックリンクを作成します... ($WORKSPACE_NAME)"
 
 # リンク先がすでに存在する場合は削除して作り直す（エラー防止のために -f を付与）
-ln -sfn /workspace/node_modules "/workspaces/$WORKSPACE_NAME/node_modules"
+ln -sfn /my-workspaces/node_modules "/workspaces/$WORKSPACE_NAME/node_modules"
 
 echo "$USER 権限を付与します..."
 # シンボリックリンク（type l）を「除外（!）」して chown を実行
