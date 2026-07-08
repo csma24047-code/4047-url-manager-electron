@@ -8,4 +8,5 @@ declare global {
 export interface IElectronAPI {
   send: (channel: string, data: any) => void;
   loadData: () => Promise<any>;
+  saveUrl: (item: any) => Promise<any>;
 }

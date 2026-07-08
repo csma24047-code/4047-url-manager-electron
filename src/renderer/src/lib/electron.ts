@@ -14,3 +14,16 @@ export async function loadAppData() {
 export function controlWindow(action: "minimize" | "maximize" | "close") {
   api.send("window-control", action);
 }
+
+/**
+ * ★ 新しいURLアイテムをメインプロセス経由で保存します
+ */
+export async function saveNewUrl(item: {
+  id: number;
+  title: string;
+  url: string;
+  tags: string[];
+  addedAt: string;
+}) {
+  return await api.saveUrl(item);
+}

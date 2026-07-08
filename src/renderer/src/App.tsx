@@ -10,7 +10,7 @@ import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 
 // ★ ラッパーファイルから明示的に import する
-import { loadAppData } from "@/renderer/src/lib/electron";
+import { loadAppData, saveNewUrl } from "@/renderer/src/lib/electron";
 
 // URLアイテムの型定義
 interface URLItem {
@@ -33,6 +33,25 @@ export function App() {
       }
     });
   }, []);
+
+  // ★ 追加ボタンが押されたときの処理
+  const handleAddDummy = async () => {
+    const newItem: URLItem = {
+      id: Date.now(),
+      title: `テストサイト-${urls.length + 1}`,
+      url: "https://example.com",
+      tags: ["test", "new"],
+      // ★ 末尾に || "" を足して、絶対に string 型になるようにする
+      addedAt: new Date().toISOString().split("T")[0] || "",
+    };
+
+    const res = await saveNewUrl(newItem);
+    if (res.success) {
+      // 画面側のステートも更新して、再読み込みなしで即座に反映させる
+      setUrls([...urls, newItem]);
+    }
+  };
+
   return (
     //systemだとdocker上では認識できないのでdevtoolで Emulate CSS media feature prefers-color-schemeをdarkにして変わればOK
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
@@ -60,6 +79,14 @@ export function App() {
                       未整理
                     </div>
                   </nav>
+
+                  {/* ★ テスト用の追加ボタンを設置 */}
+                  <button
+                    onClick={handleAddDummy}
+                    className="w-full bg-primary text-primary-foreground text-sm font-bold py-2 px-4 rounded hover:bg-primary/90 transition-colors"
+                  >
+                    + ダミーURLを追加
+                  </button>
                 </div>
 
                 {/* 左下：設定＆テーマ切り替え */}

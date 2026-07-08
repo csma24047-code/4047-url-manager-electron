@@ -15,4 +15,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     // メインプロセスの ipcMain.handle("load-data") を呼び出して結果を待つ
     return await ipcRenderer.invoke("load-data");
   },
+
+  saveUrl: async (item: any) => {
+    return await ipcRenderer.invoke("save-url", item);
+  },
 });

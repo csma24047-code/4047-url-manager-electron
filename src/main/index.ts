@@ -90,6 +90,48 @@ export function registerIpcHandlers(jsonPath: string) {
       return { urls: [], settings: { darkMode: true } };
     }
   });
+  ipcMain.handle("save-url", async (_event, newUrlItem) => {
+    try {
+      // 現在のファイルを読み込む
+      const fileRaw = fs.readFileSync(jsonPath, "utf-8");
+      const jsonData = JSON.parse(fileRaw);
+
+      // 新しいアイテムを配列に追加
+      jsonData.urls.push(newUrlItem);
+
+      // ファイルに上書き保存（インデント付きで見やすく）
+      fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2), "utf-8");
+
+      return { success: true };
+    } catch (error) {
+      console.error("データの保存失敗:", error);
+      // error が Error オブジェクトなら message を使い、そうでなければ文字列にする
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      return { success: false, error: errorMessage };
+    }
+  });
+
+  // ★新しく追加：URLの削除処理
+  ipcMain.handle("delete-url", async (_event, idToDelete: number) => {
+    try {
+      const fileRaw = fs.readFileSync(jsonPath, "utf-8");
+      const jsonData = JSON.parse(fileRaw);
+
+      // 指定されたID以外のデータだけで新しい配列を作る（＝指定されたIDを削除）
+      jsonData.urls = jsonData.urls.filter(
+        (item: any) => item.id !== idToDelete,
+      );
+
+      fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2), "utf-8");
+      return { success: true };
+    } catch (error) {
+      console.error("データの削除失敗:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      return { success: false, error: errorMessage };
+    }
+  });
 }
 
 // アプリの起動
