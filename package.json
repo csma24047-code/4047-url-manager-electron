@@ -20,13 +20,18 @@
       "output": "dist"
     },
     "files": [
-      "out/**/*"
+      "out/**/*",
+      "package.json"
     ],
     "win": {
       "target": "nsis"
-    }
+    },
+    "asar": true
   },
   "dependencies": {
+    "electron-store": "^11.0.2"
+  },
+  "devDependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -38,7 +43,6 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "electron-store": "^11.0.2",
     "lucide-react": "^1.14.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.5",
@@ -48,9 +52,7 @@
     "react-resizable-panels": "^4.11.0",
     "recharts": "^2.15.4",
     "tailwind-merge": "^3.5.0",
-    "zod": "^4.4.3"
-  },
-  "devDependencies": {
+    "zod": "^4.4.3",
     "@tailwindcss/vite": "^4.2.4",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
