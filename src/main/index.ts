@@ -1,5 +1,5 @@
 //electronを使用
-import { app, BrowserWindow, ipcMain, screen } from "electron";
+import { app, BrowserWindow, ipcMain, shell } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -8,7 +8,7 @@ import { IPC_CHANNELS } from "@/types/index";
 app.disableHardwareAcceleration(); // CPUのみでレンダリング
 
 //ウィンドウ作成
-export function create_window(options: {
+export function createWindow(options: {
   preloadPath: string;
   htmlPath: string;
 }): void {
@@ -138,19 +138,46 @@ export function registerIpcHandlers(jsonPath: string) {
       }
     },
   );
-}
 
-// アプリの起動
-export function initialize_app() {
-  //実行場所はout/main/index.cjs
-  const preloadPath = path.join(__dirname, "../preload/preload.cjs");
-  const htmlPath = path.join(__dirname, "../renderer/index.html");
-  const jsonPath = path.join(__dirname, "../../database/urls.json");
-
-  app.whenReady().then(() => {
-    registerIpcHandlers(jsonPath);
-    create_window({ preloadPath, htmlPath });
+  // ★ 追加：外部ブラウザでURLを開く
+  ipcMain.handle("open-url", async (_event, url: string) => {
+    try {
+      if (url.startsWith("http://") || url.startsWith("https://")) {
+        await shell.openExternal(url);
+      }
+    } catch (error) {
+      console.error("URLを開けませんでした:", error);
+    }
   });
 }
 
-initialize_app();
+// アプリの起動
+export function initializeApp() {
+  //実行場所はout/main/index.cjs
+  const preloadPath = path.join(__dirname, "../preload/preload.cjs");
+  const htmlPath = path.join(__dirname, "../renderer/index.html");
+
+  app.whenReady().then(() => {
+    let jsonPath: string;
+
+    if (!app.isPackaged) {
+      // 🟢 開発中：プロジェクトのルート直下（srcと同じ階層など）に保存する
+      // これならVS Codeやエクスプローラーからいつでも直接手動で弄れる！
+      jsonPath = path.join(__dirname, "../database/urls.json");
+    } else {
+      // 🔵 製品版（.exe化された後）：OS公認の安全なユーザーデータ領域に保存する
+      // これで権限エラーも、アップデートでデータが消える問題も回避！
+      jsonPath = path.join(
+        app.getPath("userData"),
+        "urls-manager-app-db/urls.json",
+      );
+    }
+
+    console.log("現在のデータ保存先:", jsonPath);
+
+    registerIpcHandlers(jsonPath);
+    createWindow({ preloadPath, htmlPath });
+  });
+}
+
+initializeApp();

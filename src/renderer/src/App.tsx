@@ -116,7 +116,14 @@ export function App() {
                         <h3 className="font-bold text-lg truncate pr-6">
                           {item.title}
                         </h3>
-                        <p className="text-xs text-muted-foreground truncate mb-2">
+                        {/* ★ URLを青文字・下線（ホバー時）にして、クリックでブラウザが開くようにする */}
+                        <p
+                          onClick={() =>
+                            window.electronAPI.openInBrowser(item.url)
+                          }
+                          className="text-xs text-blue-500 hover:underline truncate mb-2 cursor-pointer inline-block max-w-full"
+                          title="ブラウザで開く"
+                        >
                           {item.url}
                         </p>
                       </div>

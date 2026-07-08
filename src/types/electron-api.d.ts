@@ -10,6 +10,8 @@ export interface IElectronAPI {
   minimizeWindow: () => void;
   maximizeWindow: () => void;
   closeWindow: () => void;
+
+  openInBrowser: (url: string) => Promise<void>;
 }
 
 declare global {
