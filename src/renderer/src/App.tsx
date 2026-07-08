@@ -11,6 +11,7 @@ import { ScrollArea } from "@/renderer/src/components/ui/scroll-area";
 import { ThemeProvider } from "@/renderer/src/components/theme-provider";
 import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
+import { AddUrlDialog } from "@/renderer/src/components/add-url-dialog";
 
 //urlの型定義
 import { URLItem } from "@/types";
@@ -29,20 +30,8 @@ export function App() {
   }, []);
 
   // ★ 追加ボタンが押されたときの処理
-  const handleAddDummy = async () => {
-    const newItem: URLItem = {
-      id: Date.now(),
-      title: `テストサイト-${urls.length + 1}`,
-      url: "https://example.com",
-      tags: ["test", "new"],
-      // ★ 末尾に || "" を足して、絶対に string 型になるようにする
-      addedAt: new Date().toISOString().split("T")[0] || "",
-    };
-
-    const res = await window.electronAPI.saveUrl(newItem);
-    if (res.success) {
-      setUrls([...urls, newItem]);
-    }
+  const handleAddItem = (newItem: URLItem) => {
+    setUrls([...urls, newItem]);
   };
 
   const handleDelete = async (id: number) => {
@@ -80,13 +69,12 @@ export function App() {
                     </div>
                   </nav>
 
-                  {/* ★ テスト用の追加ボタンを設置 */}
-                  <button
-                    onClick={handleAddDummy}
-                    className="w-full bg-primary text-primary-foreground text-sm font-bold py-2 px-4 rounded hover:bg-primary/90 transition-colors"
-                  >
-                    + ダミーURLを追加
-                  </button>
+                  {/* ★ ダミーボタンを AddUrlDialog で包み、本物のフォームへ昇格 */}
+                  <AddUrlDialog onAdd={handleAddItem}>
+                    <button className="w-full bg-primary text-primary-foreground text-sm font-bold py-2 px-4 rounded hover:bg-primary/90 transition-colors cursor-pointer">
+                      + 新しいURLを追加
+                    </button>
+                  </AddUrlDialog>
                 </div>
 
                 {/* 左下：設定＆テーマ切り替え */}
