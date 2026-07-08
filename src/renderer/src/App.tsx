@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"; // ★ useEffect, useState を追加
+import { Trash2 } from "lucide-react";
+
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -10,7 +12,11 @@ import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 
 // ★ ラッパーファイルから明示的に import する
-import { loadAppData, saveNewUrl } from "@/renderer/src/lib/electron";
+import {
+  loadAppData,
+  saveNewUrl,
+  deleteUrlById,
+} from "@/renderer/src/lib/electron";
 
 // URLアイテムの型定義
 interface URLItem {
@@ -49,6 +55,14 @@ export function App() {
     if (res.success) {
       // 画面側のステートも更新して、再読み込みなしで即座に反映させる
       setUrls([...urls, newItem]);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    const res = await deleteUrlById(id);
+    if (res.success) {
+      // 画面側のステートからも即座に消去する
+      setUrls(urls.filter((item) => item.id !== id));
     }
   };
 
@@ -112,10 +126,20 @@ export function App() {
                   {urls.map((item) => (
                     <div
                       key={item.id}
-                      className="border rounded-lg p-4 bg-card shadow-xs flex flex-col justify-between h-32"
+                      className="border rounded-lg p-4 bg-card shadow-xs flex flex-col justify-between h-32 relative group"
                     >
+                      {/* ★ カードの右上に削除ボタンを配置（マウスホバー時だけ目立たせる） */}
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors"
+                        title="削除"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+
                       <div>
-                        <h3 className="font-bold text-lg truncate">
+                        {/* 削除ボタンと被らないように横幅に pr-6 を指定 */}
+                        <h3 className="font-bold text-lg truncate pr-6">
                           {item.title}
                         </h3>
                         <p className="text-xs text-muted-foreground truncate mb-2">

@@ -19,4 +19,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   saveUrl: async (item: any) => {
     return await ipcRenderer.invoke("save-url", item);
   },
+
+  deleteUrl: async (id: number) => {
+    return await ipcRenderer.invoke("delete-url", id);
+  },
 });

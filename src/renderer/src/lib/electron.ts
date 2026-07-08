@@ -27,3 +27,7 @@ export async function saveNewUrl(item: {
 }) {
   return await api.saveUrl(item);
 }
+
+export async function deleteUrlById(id: number) {
+  return await window.electronAPI.deleteUrl(id);
+}
