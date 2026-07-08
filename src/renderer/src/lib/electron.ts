@@ -1,0 +1,16 @@
+// 画面側のグローバル変数をこのファイル内に閉じ込める
+const api = window.electronAPI;
+
+/**
+ * アプリのデータをメインプロセスから読み込みます（urls と settings が返ります）
+ */
+export async function loadAppData() {
+  return await api.loadData();
+}
+
+/**
+ * ウィンドウの操作（最小化・最大化・閉じる）を行います
+ */
+export function controlWindow(action: "minimize" | "maximize" | "close") {
+  api.send("window-control", action);
+}

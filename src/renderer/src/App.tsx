@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"; // ★ useEffect, useState を追加
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -8,7 +9,30 @@ import { ThemeProvider } from "@/renderer/src/components/theme-provider";
 import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 
+// ★ ラッパーファイルから明示的に import する
+import { loadAppData } from "@/renderer/src/lib/electron";
+
+// URLアイテムの型定義
+interface URLItem {
+  id: number;
+  title: string;
+  url: string;
+  tags: string[];
+  addedAt: string;
+}
+
 export function App() {
+  // ★ 取得したURLリストを管理するステート
+  const [urls, setUrls] = useState<URLItem[]>([]);
+
+  // ★ アプリ起動時にデータを1回だけ読み込む
+  useEffect(() => {
+    loadAppData().then((data) => {
+      if (data && data.urls) {
+        setUrls(data.urls);
+      }
+    });
+  }, []);
   return (
     //systemだとdocker上では認識できないのでdevtoolで Emulate CSS media feature prefers-color-schemeをdarkにして変わればOK
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
@@ -56,24 +80,40 @@ export function App() {
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">アイテムリスト</h1>
 
-                {/* URLカードのグリッド配置 */}
+                {/* ★ JSONから読み込んだURLデータでカードを動的生成 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="aspect-video border rounded-lg p-4 bg-card shadow-xs">
-                    URLの内容...
-                  </div>
-                  <div className="aspect-video border rounded-lg p-4 bg-card shadow-xs">
-                    URLの内容...
-                  </div>
-                  <div className="aspect-video border rounded-lg p-4 bg-card shadow-xs">
-                    URLの内容...
-                  </div>
+                  {urls.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border rounded-lg p-4 bg-card shadow-xs flex flex-col justify-between h-32"
+                    >
+                      <div>
+                        <h3 className="font-bold text-lg truncate">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground truncate mb-2">
+                          {item.url}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {item.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </ScrollArea>
             </ResizablePanel>
 
             <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
-            {/* 3. 右側パネル：詳細表示 (40%) */}
+            {/* 3. 右側パネル：詳細表示 */}
             <ResizablePanel defaultSize="40%" minSize="20%">
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">詳細</h1>
