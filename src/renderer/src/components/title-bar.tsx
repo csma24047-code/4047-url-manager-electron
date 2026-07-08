@@ -8,12 +8,9 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/renderer/src/components/ui/menubar";
+import { controlWindow } from "@/renderer/src/lib/electron";
 
 export function TitleBar() {
-  const handleControl = (action: string) => {
-    // Electronのメインプロセスに命令を送る (preload経由)
-    window.electronAPI.send("window-control", action);
-  };
   return (
     <div className="flex items-center justify-between bg-background border-b select-none">
       {/* ドラッグ可能エリア */}
@@ -26,7 +23,7 @@ export function TitleBar() {
                 New Window <MenubarShortcut>⌘N</MenubarShortcut>
               </MenubarItem>
               <MenubarSeparator />
-              <MenubarItem onClick={() => handleControl("close")}>
+              <MenubarItem onClick={() => controlWindow("close")}>
                 Quit
               </MenubarItem>
             </MenubarContent>
@@ -47,19 +44,19 @@ export function TitleBar() {
       {/* ウィンドウ操作ボタン (no-drag必須) */}
       <div className="no-drag flex">
         <button
-          onClick={() => handleControl("minimize")}
+          onClick={() => controlWindow("minimize")}
           className="p-2 hover:bg-accent"
         >
           <Minus size={16} />
         </button>
         <button
-          onClick={() => handleControl("maximize")}
+          onClick={() => controlWindow("maximize")}
           className="p-2 hover:bg-accent"
         >
           <Square size={14} />
         </button>
         <button
-          onClick={() => handleControl("close")}
+          onClick={() => controlWindow("close")}
           className="p-2 hover:bg-destructive hover:text-destructive-foreground"
         >
           <X size={16} />
