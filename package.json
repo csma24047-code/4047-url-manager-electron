@@ -6,7 +6,7 @@
   "main": "./out/main/index.js",
   "scripts": {
     "build": "electron-vite build",
-    "start": "electron .",
+    "start": "electron . --no-sandbox",
     "preview": "electron-vite preview -- --no-sandbox",
     "dev": "electron-vite dev -- --no-sandbox"
   },
