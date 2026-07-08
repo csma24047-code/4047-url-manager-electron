@@ -5,18 +5,17 @@
 #ここまでホワイトリスト化
 
 #ここから設定
-#許可
 !.devcontainer/*
 !.vscode/*
+!/.gitattributes
 !/.dockerignore
 !/.gitignore
 !/readme.txt
 
-#一般
 !**/*.json
 !**/*.html
 !**/*.css
-#js
+
 !**/*.js
 !**/*cjs
 !**/*.ts
