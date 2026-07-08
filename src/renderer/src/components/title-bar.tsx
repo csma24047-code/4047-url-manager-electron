@@ -17,8 +17,8 @@ export function TitleBar() {
   return (
     <div className="flex items-center justify-between bg-background border-b select-none">
       {/* ドラッグ可能エリア */}
-      <div className="flex items-center flex-1 h-10 px-2">
-        <Menubar className="border-none bg-transparent">
+      <div className="drag flex items-center flex-1 h-10 px-2">
+        <Menubar className="no-drag border-none bg-transparent">
           <MenubarMenu>
             <MenubarTrigger>File</MenubarTrigger>
             <MenubarContent>
@@ -45,7 +45,7 @@ export function TitleBar() {
       </div>
 
       {/* ウィンドウ操作ボタン (no-drag必須) */}
-      <div className="flex">
+      <div className="no-drag flex">
         <button
           onClick={() => handleControl("minimize")}
           className="p-2 hover:bg-accent"

@@ -1,24 +1,83 @@
 //tailwindcssv4.0
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/renderer/src/components/ui/resizable";
+import { ScrollArea } from "@/renderer/src/components/ui/scroll-area";
 import { ThemeProvider } from "@/renderer/src/components/theme-provider";
 import { TitleBar } from "@/renderer/src/components/title-bar";
-import { mainContents } from "@/renderer/src/components/main-contents";
-import { Button } from "@/renderer/src/components/ui/button";
+import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 
 export function App() {
   return (
-    <div className="flex flex-col gap-4 p-8">
-      {/* 1. 標準的なshadcnボタン（これで色が変わるか確認） */}
-      <Button variant="default">標準ボタン</Button>
+    //systemだとdocker上では認識できないのでdevtoolで Emulate CSS media feature prefers-color-schemeをdarkにして変わればOK
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <div className="h-screen w-full flex flex-col overflow-hidden">
+        <TitleBar />
+        <div className="flex-1 w-full min-h-0">
+          <ResizablePanelGroup orientation="horizontal" className="h-full">
+            {/*左側パネル*/}
+            <ResizablePanel defaultSize="10%" minSize="5%" maxSize="15%">
+              <div className="flex h-full flex-col justify-between">
+                <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis ">
+                  <h2 className="text-2xl font-bold mb-4">項目一覧</h2>
+                  <nav className="text-sm text-muted-foreground">
+                    <div className="p-1 rounded text-secondary-foreground">
+                      すべてのアイテム
+                    </div>
+                    <div className="p-1 rounded text-secondary-foreground">
+                      お気に入り
+                    </div>
+                    <div className="p-1 rounded text-secondary-foreground">
+                      未整理
+                    </div>
+                  </nav>
+                </div>
+                {/* 下部：Configセクション */}
+                <div className="p-2 rounded text-secondary-foreground whitespace-nowrap overflow-hidden text-ellipsis ">
+                  <button className="flex w-full items-center gap-2 p-2 text-sm hover:bg-accent rounded-md transition-colors">
+                    <span className="whitespace-nowrap font-bold">設定</span>
+                    <ModeToggle />
+                  </button>
+                </div>
+              </div>
+            </ResizablePanel>
 
-      {/* 2. 破壊的アクション用の赤いボタン（bg-destructive） */}
-      <Button variant="destructive">削除ボタン</Button>
+            <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
-      {/* 3. drag領域に入れた場合（今回の問題の切り分け） */}
-      <div className="drag p-4 bg-gray-100">
-        <Button variant="outline" className="no-drag">
-          ドラッグ領域内のボタン
-        </Button>
+            {/*右側パネル*/}
+            <ResizablePanel defaultSize="80">
+              <ScrollArea className="h-full p-6">
+                <h1 className="text-2xl font-bold mb-6">アイテムリスト</h1>
+
+                {/* ここにカード（グリッド）を並べる */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* 実際のURLカードコンポーネントをここに配置 */}
+                  <div className="aspect-video border rounded-lg p-4 bg-card">
+                    URLの内容...
+                  </div>
+                  <div className="aspect-video border rounded-lg p-4 bg-card">
+                    URLの内容...
+                  </div>
+                  <div className="aspect-video border rounded-lg p-4 bg-card">
+                    URLの内容...
+                  </div>
+                </div>
+              </ScrollArea>
+            </ResizablePanel>
+
+            <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
+
+            {/*右側パネル*/}
+            <ResizablePanel defaultSize="10">
+              <ScrollArea className="h-full p-6">
+                <h1 className="text-2xl font-bold mb-6">詳細</h1>
+              </ScrollArea>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
