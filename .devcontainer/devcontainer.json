@@ -5,20 +5,17 @@
     "context": ".."
   },
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": "true",
-      "installOhMyZsh": "true",
-      "configureZshAsDefaultShell": "true",
-      "installOhMyZshConfig": "true"
-    }
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {}
   },
+  "remoteUser": "node",
+  "postCreateCommand": "ln -s /workspace/node_modules \"$(pwd)/node_modules\"",
   "containerEnv": {
     "DISPLAY": ":0", // WSLgの標準ディスプレイ番号
     "WAYLAND_DISPLAY": "wayland-0", // Waylandを優先
     "XDG_RUNTIME_DIR": "/mnt/wslg/runtime-dir",
     "ELECTRON_OZONE_PLATFORM_HINT": "wayland" // ElectronにWaylandを使うよう指示
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh",
   "mounts": [
     // WSLgのシステムと通信するためのパスをコンテナに共有する
     "source=\\\\wsl.localhost\\Ubuntu\\mnt\\wslg,target=/mnt/wslg,type=bind",
@@ -32,7 +29,6 @@
         "mechatroner.rainbow-csv", //csv色付け
         "mhutchie.git-graph", //gitのコミット履歴をグラフ表示
         "donjayamanne.githistory", //gitのログをわかりやすく表示
-        //"eamodio.gitlens", //git誰がどのコードを書いたかわかりやすくする
 
         /* javascript */
         "dbaeumer.vscode-eslint", //js,ts構文チェック
@@ -44,7 +40,8 @@
         "ecmel.vscode-html-css" //class名やid名を入力する際に補完
       ],
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.defaultFormatter": "esbenp.prettier-vscode", //指定しない限りpretterで整形
         "editor.formatOnSave": true
       }
     }
