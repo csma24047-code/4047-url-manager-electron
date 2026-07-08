@@ -1,29 +1,51 @@
-//electronを使用
+// electronを使用
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import * as path from "path";
 import * as fs from "fs";
+// ★ インストール済みの electron-store をインポート
+import Store from "electron-store";
 
 import { IPC_CHANNELS } from "@/types/index";
 
 app.disableHardwareAcceleration(); // CPUのみでレンダリング
 
-//ウィンドウ作成
+// ★ ウィンドウ状態管理用のストアを初期化
+const windowStateStore = new Store({
+  name: "window-state",
+  defaults: {
+    width: 1600,
+    height: 900,
+  },
+});
+
+// ウィンドウ作成
 export function createWindow(options: {
   preloadPath: string;
   htmlPath: string;
 }): void {
+  // ★ 前回のサイズを取得（データがなければデフォルトの 1600x900）
+  const savedWidth = windowStateStore.get("width") as number;
+  const savedHeight = windowStateStore.get("height") as number;
+
   const mainWindow = new BrowserWindow({
-    width: 1600,
-    height: 900,
-    resizable: true, //サイズを変更できるかどうか
-    show: false, //アプリ画面の準備ができるまで表示させない
-    frame: false, //標準のフレームを使わない
+    width: savedWidth,
+    height: savedHeight,
+    resizable: true, // サイズを変更できるかどうか
+    show: false, // アプリ画面の準備ができるまで表示させない
+    frame: false, // 標準のフレームを使わない
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
       preload: options.preloadPath,
       sandbox: false,
     },
+  });
+
+  // ★ ウィンドウサイズが変更されたら、その都度サイズを保存する
+  mainWindow.on("resize", () => {
+    const [width, height] = mainWindow.getSize();
+    windowStateStore.set("width", width);
+    windowStateStore.set("height", height);
   });
 
   // モード選択
@@ -41,7 +63,7 @@ export function createWindow(options: {
   });
 }
 
-//ブラウザ操作がされたとき
+// ブラウザ操作がされたとき
 ipcMain.on("window-control", (event, action) => {
   // 操作対象のウィンドウを特定する
   const win = BrowserWindow.fromWebContents(event.sender);
@@ -153,7 +175,7 @@ export function registerIpcHandlers(jsonPath: string) {
 
 // アプリの起動
 export function initializeApp() {
-  //実行場所はout/main/index.cjs
+  // 実行場所はout/main/index.cjs
   const preloadPath = path.join(__dirname, "../preload/preload.cjs");
   const htmlPath = path.join(__dirname, "../renderer/index.html");
 
@@ -161,12 +183,10 @@ export function initializeApp() {
     let jsonPath: string;
 
     if (!app.isPackaged) {
-      // 🟢 開発中：プロジェクトのルート直下（srcと同じ階層など）に保存する
-      // これならVS Codeやエクスプローラーからいつでも直接手動で弄れる！
+      // 開発中のDBの場所
       jsonPath = path.join(__dirname, "../database/urls.json");
     } else {
-      // 🔵 製品版（.exe化された後）：OS公認の安全なユーザーデータ領域に保存する
-      // これで権限エラーも、アップデートでデータが消える問題も回避！
+      // 本番環境の場所
       jsonPath = path.join(
         app.getPath("userData"),
         "urls-manager-app-db/urls.json",
