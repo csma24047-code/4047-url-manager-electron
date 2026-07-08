@@ -13,5 +13,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke(IPC_CHANNELS.SAVE_URL, item),
   deleteUrl: async (id: number) =>
     ipcRenderer.invoke(IPC_CHANNELS.DELETE_URL, id),
+  updateUrl: (updatedItem: any) =>
+    ipcRenderer.invoke("UPDATE_URL", updatedItem),
   openInBrowser: async (url: string) => ipcRenderer.invoke("open-url", url),
 });

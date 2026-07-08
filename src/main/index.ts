@@ -171,6 +171,30 @@ export function registerIpcHandlers(jsonPath: string) {
       console.error("URLを開けませんでした:", error);
     }
   });
+
+  // ★追加：URLの編集（更新）処理
+  ipcMain.handle(
+    "UPDATE_URL", // IPC_CHANNELS に登録していない場合は直接文字列でOK
+    async (_event, updatedItem: any) => {
+      try {
+        const fileRaw = fs.readFileSync(jsonPath, "utf-8");
+        const jsonData = JSON.parse(fileRaw);
+
+        // 該当するIDのアイテムを上書き
+        jsonData.urls = jsonData.urls.map((item: any) =>
+          item.id === updatedItem.id ? updatedItem : item,
+        );
+
+        fs.writeFileSync(jsonPath, JSON.stringify(jsonData, null, 2), "utf-8");
+        return { success: true };
+      } catch (error) {
+        console.error("データの更新失敗:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        return { success: false, error: errorMessage };
+      }
+    },
+  );
 }
 
 // アプリの起動

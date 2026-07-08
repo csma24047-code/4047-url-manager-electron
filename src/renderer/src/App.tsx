@@ -12,6 +12,8 @@ import { ThemeProvider } from "@/renderer/src/components/theme-provider";
 import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 import { AddUrlDialog } from "@/renderer/src/components/add-url-dialog";
+import { toast } from "sonner"; // ★大元のパッケージから直接インポート（ここにtoast関数が入っている）
+import { Toaster } from "@/renderer/src/components/ui/sonner"; // ★提示していただいた自前のコンポーネント
 
 // urlの型定義
 import { URLItem } from "@/types";
@@ -45,6 +47,54 @@ export function App() {
     const res = await window.electronAPI.deleteUrl(id);
     if (res.success) {
       setUrls(urls.filter((item) => item.id !== id));
+      // ★ 追加：今詳細を開いているアイテムが消されたら、詳細の選択を解除する
+      if (selectedItem?.id === id) {
+        setSelectedItem(null);
+      }
+    }
+  };
+
+  // ★追加：選択中のアイテムを管理
+  const [selectedItem, setSelectedItem] = useState<URLItem | null>(null);
+
+  // ★追加：編集用フォームのステート
+  const [editTitle, setEditTitle] = useState("");
+  const [editUrl, setEditUrl] = useState("");
+  const [editTags, setEditTags] = useState("");
+
+  // アイテムが選択されたらフォームに値をセットする
+  const handleSelectCard = (item: URLItem) => {
+    setSelectedItem(item);
+    setEditTitle(item.title);
+    setEditUrl(item.url);
+    setEditTags(item.tags.join(", "));
+  };
+
+  // ★追加：編集内容を保存する処理
+  const handleUpdate = async () => {
+    if (!selectedItem) return;
+
+    const updatedItem: URLItem = {
+      ...selectedItem,
+      title: editTitle,
+      url: editUrl,
+      tags: editTags
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t !== ""),
+    };
+
+    // @ts-ignore (型定義をスキップする場合)
+    const res = await window.electronAPI.updateUrl(updatedItem);
+    if (res.success) {
+      // 画面上のリストを更新
+      setUrls(
+        urls.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
+      );
+      setSelectedItem(updatedItem);
+      toast.success("更新完了", {
+        description: "アイテムの情報を更新しました。",
+      });
     }
   };
 
@@ -213,13 +263,22 @@ export function App() {
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
                         {filteredUrls.map((item) => (
+                          // 既存の grid 内の card の div を以下のように変更
                           <div
                             key={item.id}
-                            className="border rounded-lg p-4 bg-card shadow-xs flex flex-col justify-between h-32 relative group"
+                            onClick={() => handleSelectCard(item)} // ★追加
+                            className={`border rounded-lg p-4 bg-card shadow-xs flex flex-col justify-between h-32 relative group cursor-pointer hover:border-primary transition-colors ${
+                              selectedItem?.id === item.id
+                                ? "ring-2 ring-primary"
+                                : "" // ★選択中のハイライト
+                            }`}
                           >
                             <button
-                              onClick={() => handleDelete(item.id)}
-                              className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation(); // ★ 親のカードクリックイベント（詳細表示）が発動するのを防ぐ
+                                handleDelete(item.id);
+                              }}
+                              className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors z-10" // ★z-10も足しておくとクリックしやすくなります
                               title="削除"
                             >
                               <Trash2 size={16} />
@@ -265,17 +324,67 @@ export function App() {
             <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
             {/* 3. 右側パネル：詳細表示 */}
-            <ResizablePanel defaultSize="40%" minSize="20%" maxSize="45%">
+            {/* 3. 右側パネル：詳細表示 */}
+            <ResizablePanel defaultSize="40%" minSize="20%">
               <ScrollArea className="h-full p-6">
-                <h1 className="text-2xl font-bold mb-6">詳細</h1>
-                <p className="text-sm text-muted-foreground">
-                  リストで選択されたアイテムの詳細情報がここに表示されます。
-                </p>
+                <h1 className="text-2xl font-bold mb-6">
+                  アイテムの詳細・編集
+                </h1>
+
+                {!selectedItem ? (
+                  <p className="text-sm text-muted-foreground">
+                    リストで選択されたアイテムの詳細情報がここに表示されます。
+                  </p>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        タイトル
+                      </label>
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="flex h-9 w-full rounded-md border border-input bg-card px-3 py-1 text-sm shadow-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        URL
+                      </label>
+                      <input
+                        type="text"
+                        value={editUrl}
+                        onChange={(e) => setEditUrl(e.target.value)}
+                        className="flex h-9 w-full rounded-md border border-input bg-card px-3 py-1 text-sm shadow-xs"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        タグ (カンマ区切り)
+                      </label>
+                      <input
+                        type="text"
+                        value={editTags}
+                        onChange={(e) => setEditTags(e.target.value)}
+                        className="flex h-9 w-full rounded-md border border-input bg-card px-3 py-1 text-sm shadow-xs"
+                        placeholder="例: 仕事, あとで読む"
+                      />
+                    </div>
+                    <button
+                      onClick={handleUpdate}
+                      className="w-full bg-primary text-primary-foreground text-sm font-bold py-2 px-4 rounded hover:bg-primary/90 transition-colors mt-4 cursor-pointer"
+                    >
+                      変更を保存する
+                    </button>
+                  </div>
+                )}
               </ScrollArea>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
       </div>
+      <Toaster />
     </ThemeProvider>
   );
 }
