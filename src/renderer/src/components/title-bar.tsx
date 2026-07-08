@@ -36,9 +36,6 @@ export function TitleBar() {
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
-        <span className="ml-4 text-xs text-muted-foreground">
-          My Awesome App
-        </span>
       </div>
 
       {/* ウィンドウ操作ボタン (no-drag必須) */}
