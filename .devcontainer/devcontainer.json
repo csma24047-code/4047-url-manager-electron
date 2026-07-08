@@ -9,7 +9,7 @@
     "ghcr.io/devcontainers/features/common-utils:2": {}
   },
   "remoteUser": "node",
-  "postCreateCommand": "ln -s /workspace/node_modules \"$(pwd)/node_modules\"",
+  "postCreateCommand": "zsh .devcontainer/setup.sh",
   "containerEnv": {
     "DISPLAY": ":0", // WSLgの標準ディスプレイ番号
     "WAYLAND_DISPLAY": "wayland-0", // Waylandを優先
