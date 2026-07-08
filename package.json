@@ -1,7 +1,9 @@
 {
   "name": "example_app_name",
-  "version": "1.0.0",
+  "author": "exmaple_author",
+  "license": "example_license",
   "description": "Hello World!!",
+  "version": "1.0.0",
   "type": "module",
   "main": "./out/main/index.js",
   "scripts": {
@@ -10,8 +12,6 @@
     "preview": "electron-vite preview -- --no-sandbox",
     "dev": "electron-vite dev -- --no-sandbox"
   },
-  "author": "exmaple_author",
-  "license": "example_license",
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-dialog": "^1.1.15",
