@@ -52,7 +52,7 @@ export function App() {
             <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
             {/* 2. 中央パネル：URLアイテムリスト (50%) */}
-            <ResizablePanel defaultSize="80%">
+            <ResizablePanel defaultSize="50%">
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">アイテムリスト</h1>
 
@@ -74,7 +74,7 @@ export function App() {
             <ResizableHandle className="w-px bg-border hover:bg-primary transition-colors" />
 
             {/* 3. 右側パネル：詳細表示 (40%) */}
-            <ResizablePanel defaultSize="40%" minSize="10%">
+            <ResizablePanel defaultSize="40%" minSize="20%">
               <ScrollArea className="h-full p-6">
                 <h1 className="text-2xl font-bold mb-6">詳細</h1>
                 <p className="text-sm text-muted-foreground">
