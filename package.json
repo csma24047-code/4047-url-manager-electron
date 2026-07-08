@@ -10,7 +10,21 @@
     "build": "electron-vite build",
     "start": "electron . --no-sandbox",
     "preview": "electron-vite preview -- --no-sandbox",
-    "dev": "electron-vite dev -- --no-sandbox"
+    "dev": "electron-vite dev -- --no-sandbox",
+    "pack": "electron-vite build && electron-builder --win dir"
+  },
+  "build": {
+    "appId": "com.example.app",
+    "productName": "MyAwesomeApp",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    }
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -44,6 +58,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^10.1.0",
     "electron": "^41.3.0",
+    "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
     "shadcn": "^4.6.0",
     "tailwindcss": "^4.2.4",
