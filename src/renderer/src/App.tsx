@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trash2, Search, Copy } from "lucide-react"; // ★ Search アイコンを追加
+import { Trash2, Search, Copy, X } from "lucide-react";
 
 // reactコンポーネント
 import {
@@ -12,8 +12,8 @@ import { ThemeProvider } from "@/renderer/src/components/theme-provider";
 import { TitleBar } from "@/renderer/src/components/title-bar";
 import { ModeToggle } from "@/renderer/src/components/mode-toggle";
 import { AddUrlDialog } from "@/renderer/src/components/add-url-dialog";
-import { toast } from "sonner"; // ★大元のパッケージから直接インポート（ここにtoast関数が入っている）
-import { Toaster } from "@/renderer/src/components/ui/sonner"; // ★提示していただいた自前のコンポーネント
+import { toast } from "sonner";
+import { Toaster } from "@/renderer/src/components/ui/sonner";
 
 // urlの型定義
 import { URLItem } from "@/types";
@@ -57,18 +57,39 @@ export function App() {
   // ★追加：選択中のアイテムを管理
   const [selectedItem, setSelectedItem] = useState<URLItem | null>(null);
 
-  // ★追加：編集用フォームのステート
+  // 編集用フォームのステート
   const [editTitle, setEditTitle] = useState("");
   const [editUrl, setEditUrl] = useState("");
-  const [editTags, setEditTags] = useState("");
+  const [editTags, setEditTags] = useState<string[]>([]); // ★ string[] に変更
+  const [tagInput, setTagInput] = useState(""); // ★ 追加：入力文字用
 
   // アイテムが選択されたらフォームに値をセットする
   const handleSelectCard = (item: URLItem) => {
     setSelectedItem(item);
     setEditTitle(item.title);
     setEditUrl(item.url);
-    setEditTags(item.tags.join(", "));
+    setEditTags(item.tags); // ★ そのまま配列をセット
+    setTagInput(""); // ★ 入力欄リセット
   };
+
+  // ★ 追加：Enterを押した時にタグを配列に加える処理
+  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && tagInput.trim() !== "") {
+      e.preventDefault();
+      const newTag = tagInput.trim();
+      if (!editTags.includes(newTag)) {
+        setEditTags([...editTags, newTag]);
+      }
+      setTagInput("");
+    }
+  };
+
+  // ★ 追加：×ボタンを押した時にタグを削除する処理
+  const handleRemoveTag = (tagToRemove: string) => {
+    setEditTags(editTags.filter((tag) => tag !== tagToRemove));
+  };
+
+  // カード以外の場所がクリックされたら確実に解除する
 
   // ★修正：カード以外の場所がクリックされたら確実に解除する
   const handleContainerClick = (e: React.MouseEvent) => {
@@ -87,10 +108,7 @@ export function App() {
       ...selectedItem,
       title: editTitle,
       url: editUrl,
-      tags: editTags
-        .split(",")
-        .map((t) => t.trim())
-        .filter((t) => t !== ""),
+      tags: editTags, // ★ 配列をそのまま保存
     };
 
     // @ts-ignore (型定義をスキップする場合)
@@ -384,14 +402,39 @@ export function App() {
                     </div>
                     <div>
                       <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                        タグ (カンマ区切り)
+                        タグ（Enterで追加）
                       </label>
+                      {/* ★ バッジ表示エリアの追加 */}
+                      <div className="flex flex-wrap gap-1.5 p-2 border rounded-md bg-card mb-2 min-h-10 items-center">
+                        {editTags.length === 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            タグがありません
+                          </span>
+                        )}
+                        {editTags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center gap-1 text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full"
+                          >
+                            #{tag}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveTag(tag)}
+                              className="text-muted-foreground hover:text-destructive rounded-full p-px transition-colors"
+                            >
+                              <X size={12} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                      {/* ★ inputの変更 */}
                       <input
                         type="text"
-                        value={editTags}
-                        onChange={(e) => setEditTags(e.target.value)}
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={handleAddTag}
                         className="flex h-9 w-full rounded-md border border-input bg-card px-3 py-1 text-sm shadow-xs"
-                        placeholder="例: 仕事, あとで読む"
+                        placeholder="タグを入力してEnter"
                       />
                     </div>
                     <button
