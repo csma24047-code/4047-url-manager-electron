@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Trash2, Search } from "lucide-react"; // ★ Search アイコンを追加
+import { Trash2, Search, Copy } from "lucide-react"; // ★ Search アイコンを追加
 
 // reactコンポーネント
 import {
@@ -256,7 +256,6 @@ export function App() {
                         {filteredUrls.map((item) => (
                           <div
                             key={item.id}
-                            // ★データ属性 data-card="true" を付与して、目印にする
                             data-card="true"
                             onClick={() => handleSelectCard(item)}
                             className={`border rounded-lg p-4 bg-card flex flex-col justify-between h-32 relative group cursor-pointer transition-all focus:outline-hidden ${
@@ -265,24 +264,55 @@ export function App() {
                                 : "border-border hover:border-primary/50"
                             }`}
                           >
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation(); // 削除時はカード自体のイベント連鎖を防ぐだけでOK
-                                handleDelete(item.id);
-                              }}
-                              className="absolute top-2 right-2 p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors z-10"
-                              title="削除"
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {/* 右上のボタン配置エリア */}
+                            <div className="absolute top-2 right-2 flex gap-1 z-10">
+                              {/* ★ 1クリックコピーボタンを追加 */}
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation(); // 詳細ペインが開くのを防ぐ
+                                  try {
+                                    await navigator.clipboard.writeText(
+                                      item.url,
+                                    );
+                                    toast.success("コピー完了", {
+                                      description:
+                                        "URLをクリップボードにコピーしました。",
+                                    });
+                                  } catch (err) {
+                                    toast.error("コピー失敗", {
+                                      description:
+                                        "URLのコピーに失敗しました。",
+                                    });
+                                  }
+                                }}
+                                className="p-1 text-muted-foreground hover:text-primary rounded hover:bg-accent transition-colors"
+                                title="URLをコピー"
+                              >
+                                <Copy size={16} />
+                              </button>
+
+                              {/* 既存の削除ボタン */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDelete(item.id);
+                                }}
+                                className="p-1 text-muted-foreground hover:text-destructive rounded hover:bg-accent transition-colors"
+                                title="削除"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
 
                             <div>
-                              <h3 className="font-bold text-lg truncate pr-6">
+                              <h3 className="font-bold text-lg truncate pr-14">
+                                {" "}
+                                {/* ボタンが増えたので pr-6 から pr-14 に広げて被りを防ぐ */}
                                 {item.title}
                               </h3>
                               <p
                                 onClick={(e) => {
-                                  e.stopPropagation(); // ★ここも別窓で開くだけなので連鎖を止める
+                                  e.stopPropagation();
                                   window.electronAPI.openInBrowser(item.url);
                                 }}
                                 className="text-xs text-blue-500 hover:underline truncate mb-2 cursor-pointer inline-block max-w-full"
@@ -296,7 +326,7 @@ export function App() {
                                 <span
                                   key={tag}
                                   onClick={(e) => {
-                                    e.stopPropagation(); // ★タグ絞り込み時も連鎖を止める
+                                    e.stopPropagation();
                                     setActiveTab(tag);
                                   }}
                                   className="text-[10px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
