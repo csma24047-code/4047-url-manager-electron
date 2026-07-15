@@ -18,6 +18,7 @@
 !.dockerignore
 !.gitignore
 !readme.md
+!docs/**
 !components.json
 !package.json
 !package-lock.json
