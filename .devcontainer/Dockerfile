@@ -4,6 +4,7 @@ FROM node:20-bookworm-slim
 ##### アプリの依存ソフトインストール #####
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    sudo \
     git \
     zsh \
     ca-certificates \
@@ -19,6 +20,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-noto-cjk \
     dbus \
     && rm -rf /var/lib/apt/lists/*
+
+# node ユーザーがパスワードなしで sudo を実行できるように設定
+RUN echo "node ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/node \
+    && chmod 0440 /etc/sudoers.d/node
 ######
 
 ### ユーザー作業 ###
