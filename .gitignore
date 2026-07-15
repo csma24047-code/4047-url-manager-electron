@@ -23,6 +23,7 @@
 !package.json
 !package-lock.json
 !electron.vite.config.ts
+!**.png
 
 # ソースコード全体を許可（これで src/ 配下はすべてGit管理されます）
 !/src/**
