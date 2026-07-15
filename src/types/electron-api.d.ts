@@ -5,8 +5,8 @@ export interface IElectronAPI {
   loadData: () => Promise<any>;
   saveUrl: (item: any) => Promise<any>;
   deleteUrl: (id: number) => Promise<any>;
+  updateUrl: (updatedItem: any) => Promise<any>;
 
-  // ★ 専用の関数を型として定義
   minimizeWindow: () => void;
   maximizeWindow: () => void;
   closeWindow: () => void;
