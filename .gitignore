@@ -10,7 +10,7 @@
 !/.gitattributes
 !/.dockerignore
 !/.gitignore
-!/readme.txt
+!/readme.md
 
 !**/*.json
 !**/*.html
