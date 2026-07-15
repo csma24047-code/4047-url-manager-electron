@@ -26,6 +26,7 @@
         "mechatroner.rainbow-csv", //csv色付け
         "mhutchie.git-graph", //gitのコミット履歴をグラフ表示
         "donjayamanne.githistory", //gitのログをわかりやすく表示
+        "eamodio.gitlens",
 
         /* javascript */
         "dbaeumer.vscode-eslint", //js,ts構文チェック
