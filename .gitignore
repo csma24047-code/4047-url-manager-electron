@@ -7,23 +7,18 @@
 #ここから設定
 !.devcontainer/*
 !.vscode/*
-!/.gitattributes
-!/.dockerignore
-!/.gitignore
-!/readme.md
-
-!**/*.json
-!**/*.html
-!**/*.css
-
-!**/*.js
-!**/*cjs
-!**/*.ts
-!**/*tsx
+!.gitattributes
+!.dockerignore
+!.gitignore
+!readme.md
+!components.json
+!electron.vite.config.ts
+!.src/*
 
 
 #除外
 *node_modules/
+*assets/
 *dist/
 *database/
 *out/
