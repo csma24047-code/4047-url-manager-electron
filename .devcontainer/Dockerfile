@@ -4,6 +4,10 @@ FROM node:20-bookworm-slim
 ##### アプリの依存ソフトインストール #####
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    zsh \
+    ca-certificates \
+    curl \
     libgtk-3-0 \
     libnss3 \
     libasound2 \
@@ -15,17 +19,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 ######
 
-### Node.js（npm）設定 ###
-# 1. 先に node ユーザーに切り替える
+### ユーザー作業 ###
 USER node
+WORKDIR /workspaces/url-manager-electron
+# Oh My Zsh のインストール
+ENV HOME=/home/node
+ENV ZSH_CUSTOM_DIR=$HOME/.oh-my-zsh/custom
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM_DIR}/plugins/zsh-autosuggestions \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM_DIR}/plugins/zsh-syntax-highlighting \
+    && git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM_DIR}/plugins/zsh-completions \
+    && sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-completions zsh-syntax-highlighting)/' $HOME/.zshrc
 
-# 2. この状態にすると、WORKDIR がフォルダを「node所有」で自動作成してくれる
-WORKDIR /my-workspaces
-
-# 3. package.json をコピー（USER node の状態なので自動で node 所有になります）
-COPY package*.json ./
-
-# 4. 直下に node_modules をインストール
-RUN --mount=type=cache,uid=1000,gid=1000,target=/home/node/.npm \
-    npm ci && rm package*.json
-######
+# nodeライブラリインストール
+COPY --chown=node:node package*.json ./
+RUN npm ci
